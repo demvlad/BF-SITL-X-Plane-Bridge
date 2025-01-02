@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<setup>
+  <Modes>
+    <Mode name = "arm" aux = "4" value = "1000"/>
+    <Mode name = "manual" aux = "5" value = "1700"/>
+    <Mode name = "angle" aux = "5" value = "1450"/>
+  </Modes>
+  <Input>
+    <Control name = "throttle" aux = "0"/>
+    <Control name = "stick_roll" aux = "1" />
+    <Control name = "stick_pitch" aux = "2" />
+  </Input>
+  <Output>
+    <Control name = "throttle" servo = "0"/>
+    <Control name = "aileron_left" servo = "1" reverse="true"/>
+    <Control name = "aileron_right" servo = "2" />
+  </Output>
+</setup>

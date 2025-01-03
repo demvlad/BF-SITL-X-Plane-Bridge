@@ -11,7 +11,7 @@
     <Control name = "stick_pitch" aux = "2" />
   </Input>
   <Output>
-    <Control name = "throttle" servo = "0"/>
+    <Control name = "motor1" servo = "0"/>
     <Control name = "aileron_left" servo = "1" reverse="true"/>
     <Control name = "aileron_right" servo = "2" />
   </Output>

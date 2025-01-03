@@ -86,11 +86,20 @@ struct TXPlaneDataRefs
 	}PlaneControl;
 };
 
+struct TEnabledPlaneControl
+{
+	bool Ailerons;
+	bool AileronsFromPitch;
+	bool Elevator;
+	bool Rudder;
+};
+
 class TXPlaneData
 {
 	TXPlaneDataRefs XPlaneDataRefs;
 	CBetaflightData *m_pBetaflight;
 	TServoControls ServoControls;
+	TEnabledPlaneControl EnabledPlaneControl;
 	float getOutput(const TServoControl& surface);
 public:
 	TXPlaneData(CBetaflightData *pBetaflight, const CXmlSetup& xplSetup)

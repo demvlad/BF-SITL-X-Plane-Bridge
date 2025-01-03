@@ -42,20 +42,22 @@ void TXPlaneData::Initialize()
 
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Up = XPLMFindDataRef("sim/aircraft/controls/acf_ail1_up");
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Down = XPLMFindDataRef("sim/aircraft/controls/acf_ail1_dn");
-
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.AileronFromPitch = XPLMFindDataRef("sim/aircraft/specialcontrols/acf_ail1pitch");
-
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Up = XPLMFindDataRef("sim/aircraft/controls/acf_elev_up");
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Down = XPLMFindDataRef("sim/aircraft/controls/acf_elev_dn");
-
 	XPlaneDataRefs.PlaneControl.PlaneControlLimit.Rudder = XPLMFindDataRef("sim/aircraft/controls/acf_rudd_lr");
 
 	XPLMSetDatai(XPlaneDataRefs.PlaneControl.Stick.override_joystick_control, 0);
 	XPLMSetDatai(XPlaneDataRefs.PlaneControl.ActualControl.override_flight_control, 1);
 	XPLMSetDatai(XPlaneDataRefs.PlaneControl.Throttle.override_throttle, 1);
 
-	double ail  = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Up);
-	ail  = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.AileronFromPitch);
+
+	EnabledPlaneControl.Ailerons = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Up) > 0.0f
+								 || XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Down) > 0.0f;
+	EnabledPlaneControl.AileronsFromPitch = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.AileronFromPitch) > 0.0f;
+	EnabledPlaneControl.Elevator = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Up) > 0.0f
+								 || XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Down) > 0.0f;
+	EnabledPlaneControl.Rudder = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Rudder) > 0.0f;
 
 }
 
@@ -88,9 +90,11 @@ void TXPlaneData::updateBetaflightControlFromXPlane()
 {
 	float stickRoll = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.roll);
 	float stickPitch = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.pitch);
+	float stickYaw = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.yaw);
 
 	m_pBetaflight->setStickPitch(stickPitch);
 	m_pBetaflight->setStickRoll(stickRoll);
+	m_pBetaflight->setStickYaw(stickYaw);
 
 	float throttle;
 	XPLMGetDatavf(XPlaneDataRefs.PlaneControl.Throttle.input_throttle, &throttle, 0, 1);
@@ -100,35 +104,58 @@ void TXPlaneData::updateBetaflightControlFromXPlane()
 
 float TXPlaneData::getOutput(const TServoControl& ctrl)
 {
+	if (!ctrl.isEnabled())
+		return 0.0f;
+
 	float servoOutput = m_pBetaflight->bfInServos.pwm_output_raw[ctrl.servo];
 	if (servoOutput < PWM_MIN)
 		servoOutput = PWM_MIN;
 	else if (servoOutput > PWM_MAX)
 		servoOutput = PWM_MAX;
 	float output = 0.0;
-	if (ctrl.name == "throttle")
-		output = (servoOutput - PWM_MIN) / (PWM_MAX - PWM_MIN);
-	else
-	{
-		output = -1.0f + 2.0f * (servoOutput - PWM_MIN) / (PWM_MAX - PWM_MIN);
-		if (ctrl.reverse)
-			output *= -1.0f;
-	}
+	output = -1.0f + 2.0f * (servoOutput - PWM_MIN) / (PWM_MAX - PWM_MIN);
+	if (ctrl.reverse)
+		output *= -1.0f;
 	return output;
 }
 
 void TXPlaneData::sendServoControlToXPlane()
 {	
-	float LeftServo = getOutput(ServoControls["aileron_left"]);
-	float RightServo = getOutput(ServoControls["aileron_right"]);
-	float pitchControl = 0.5f * (LeftServo + RightServo);
-	float rollControl  = 0.5f * (LeftServo - RightServo);
+	float rollControl = 0.0f,
+		  pitchControl = 0.0f,
+		  yawControl = 0.0f;
 
-	XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
-	XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.roll, rollControl);
+	if (EnabledPlaneControl.Ailerons)
+	{
+		float LeftServo = getOutput(ServoControls["aileron_left"]);
+		float RightServo = getOutput(ServoControls["aileron_right"]);
+		rollControl  = 0.5f * (LeftServo - RightServo);
+		XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.roll, rollControl);
+
+		if (EnabledPlaneControl.AileronsFromPitch)
+		{
+			pitchControl = 0.5f * (LeftServo + RightServo);			
+			XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
+		}
+	}
 	
-	float throttle = getOutput(ServoControls["throttle"]);
-	XPLMSetDatavf(XPlaneDataRefs.PlaneControl.Throttle.output_throttle, &throttle, 0, 1);
+	if (EnabledPlaneControl.Elevator)
+	{
+		pitchControl = getOutput(ServoControls["elevator"]);
+		XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
+	}
+
+	if (EnabledPlaneControl.Rudder)
+	{
+		yawControl = getOutput(ServoControls["rudder"]);
+		XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.yaw, yawControl);
+	}
+
+	float throttle[2] = { 
+		0.5f * (getOutput(ServoControls["motor1"]) + 1.0f),		// Translate [-1 ... +1] range to [0 ... +1]
+		0.5f * (getOutput(ServoControls["motor2"]) + 1.0f)
+	};
+	XPLMSetDatavf(XPlaneDataRefs.PlaneControl.Throttle.output_throttle, throttle, 0, 2);
 }
 
 void TXPlaneData::computeQuaternionFromRPY( double* quat, double roll, double pitch, double yaw)

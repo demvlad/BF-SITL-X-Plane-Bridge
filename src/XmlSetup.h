@@ -28,6 +28,11 @@ struct TModeRC
 		aux = mode.aux;
 		value = mode.value;
 	}
+
+	bool isEnabled() const
+	{
+		return name != "";
+	}
 };
 
 
@@ -52,6 +57,11 @@ struct TControlRC
 	{
 		name = control.name;
 		aux = control.aux;
+	}
+
+	bool isEnabled() const
+	{
+		return name != "";
 	}
 };
 
@@ -80,6 +90,11 @@ struct TServoControl
 		name = surface.name;
 		servo = surface.servo;
 		reverse = surface.reverse;
+	}
+
+	bool isEnabled() const
+	{
+		return name != "";
 	}
 };
 

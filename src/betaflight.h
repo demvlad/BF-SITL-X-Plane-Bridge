@@ -22,7 +22,7 @@
 
 #pragma once
 #include <stdint.h>
-#define BF_HOST "192.168.56.2"
+#define BF_HOST "127.0.0.1"
 
 #define PORT_PWM_RAW    9001    // Out
 #define PORT_PWM        9002    // Out

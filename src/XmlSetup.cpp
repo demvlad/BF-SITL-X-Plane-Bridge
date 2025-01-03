@@ -11,7 +11,7 @@ CXmlSetup::CXmlSetup(void)
 	strcat(FileNamePath, XPLMGetDirectorySeparator());
 	strcat(FileNamePath, "plugins");
 	strcat(FileNamePath, XPLMGetDirectorySeparator());
-	strcat(FileNamePath, "Betaflight-HITL");
+	strcat(FileNamePath, "Betaflight-SITL");
 	strcat(FileNamePath, XPLMGetDirectorySeparator());
 	strcat(FileNamePath, "setup.xml");
 	pugi::xml_document spXMLDOM;

@@ -18,13 +18,16 @@ The example of ready to use compiled SITL file can be loaded from "release/SITL"
 1. To setup SITL by using [Betaflight configurator](https://app.betaflight.com/) you need to run [websockify proxy](https://github.com/novnc/websockify-other)
 
 Copy websockify file from "release/websockify" repository directory to your PC disk.
+
 2. Run WSL from command line by using cmd console. Go to your websockify directory and run websockify proxi server by command:  
 ./websockify 127.0.0.1:6761 127.0.0.1:5761
 ![websockify run](/images/websockfy.jpg)
 3. Run second WSL instance from command line by using cmd. Go to your SITL directory and run SITL: ./betaflight_SITL.elf
 ![SITL run](/images/SITL.jpg)
 4. Run [Betaflight configurator](https://app.betaflight.com/)
+
 5. Set "Enable manual connection mode" in configurators option.
+
 6. Set port value in configurator "port" field as ws://127.0.0.1:6761
 ![BF Configurator](/images/BF_cfg_setup.jpg)
 7. Press "Connect" button to connect SITL software
@@ -32,6 +35,7 @@ Copy websockify file from "release/websockify" repository directory to your PC d
 8. Load yours RC airplane "diff" data into SITL by using Configurator cli, save config. Can use SITL/cli_setup_example.txt config file for example.
 ![BF Configurator cli setup](/images/BF_cfg_cli.jpg)
 9. Restart SITL and Betaflight configurator, connect to SITL
+
 10. Go to Motors configurator tab and set motors protocol as PWM, save config.   
 ![BF Configurator cli setup](/images/BF_cfg_motors.jpg)
 11. Restart SITL and Betaflight configurator, connect to SITL, set pid loop freq on the configuration page (select 1k ... 8k), save config.
@@ -46,13 +50,13 @@ The SITL is configured.
 This model is created in [x-plane maker](https://developer.x-plane.com/manuals/planemaker/) programm. 
 
 
-**Notice**
+**Notice:**
 If yours airplane has other controls (elevator, rudder, 2-motors) you need to create own X-Plane model in [plane maker](https://developer.x-plane.com/manuals/planemaker/). 
 
 You can copy "plugins" directory into your X-Plane model to use this Betaflight SITL bridge.
 
 
-The [release\Aircraft\Extra Aircraft\Wing640\plugins\Betaflight-SITL\setup.xml](release/Aircraft/Extra Aircraft/Wing640/plugins/Betaflight-SITL/setup.xml) file contains setup follow my SITL/cli_setup_example.txt diff file.
+The *setup.xml* (release/Aircraft/Extra Aircraft/Wing640/plugins/Betaflight-SITL/setup.xml) file contains setup follow my SITL/cli_setup_example.txt diff file.
 You can change some settings for yours fly wing airplane in this setup file.
 
 The ***"Modes"*** section contains flight modes setup: Arm, Manual, Angle. The Acro is default.
@@ -67,6 +71,7 @@ You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these 
 
 # Run X-Plane airplane model by using SITL control
 1. Run X-Plane and select Wing640 model. Start flight.
+![Run X-Plane](/images/X-Plane-start.jpg)
 ![Run X-Plane](/images/X-Plane-main.jpg)
 2. Start WSL session, go to SITL directory and start SITL, set your windows IP address as SITL run parameter (172.20.144.1 in my case):
 
@@ -78,6 +83,8 @@ You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these 
 
 ![X-Plane Menu](/images/SITL_XPlane_Menu.jpg)
 4. Let's fly!
+
+You can use [Betaflight configurator](https://app.betaflight.com/) during simulation to check RC channels, flight modes state and Arm disabled flags.
 
 
 

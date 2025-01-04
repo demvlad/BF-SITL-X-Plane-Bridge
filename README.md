@@ -68,7 +68,7 @@ The ***"Input"*** section contains RC input settings. You should write rc aux ch
 You can add *"stick_yaw"* row into this section if yours plane has rudder or 2-motors differencial control.
 
 The ***"Output"*** section contains servo output settings. You can write servo numbers for *"motor1"*, *"aileron_left"*, *"aileron_right"* channels.
-You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these controls.
+You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these controls. Use "reverse" flag to revert servo control.
 
 # Run X-Plane airplane model by using SITL control
 1. Run X-Plane and select Wing640 model. Start flight.

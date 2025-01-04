@@ -42,6 +42,9 @@ Copy websockify file from "release/websockify" repository directory to your PC d
 ![BF Configurator cli setup](/images/BF_cfg_pid_loop.jpg)
 The SITL is configured.
 
+## X-Plane install
+Install [11 or 12 versions of X-Plane](https://www.x-plane.com/desktop/try-it/). The demo version can used for short test flights.
+
 ## Setup X-Plane airplane model
 ***Aircraft\Extra Aircraft\Wing640*** directory contains model what is similar my airplane. This is flywing type airplane with one motors and ailerons control by roll and pitch together. The wingspan is 620mm, the weight is around 280g. 
 

@@ -47,12 +47,11 @@ The SITL is configured.
 
 ***Copy this directory in X-Plane install path.***
 
-This model is created in [x-plane maker](https://developer.x-plane.com/manuals/planemaker/) programm. 
+This model is created in [x-plane maker](https://developer.x-plane.com/manuals/planemaker/) programm. Use this programm to edit model performance.
 
 
 **Notice:**
 If yours airplane has other controls (elevator, rudder, 2-motors) you need to create own X-Plane model in [plane maker](https://developer.x-plane.com/manuals/planemaker/). 
-
 You can copy "plugins" directory into your X-Plane model to use this Betaflight SITL bridge.
 
 
@@ -60,7 +59,6 @@ The *setup.xml* (release/Aircraft/Extra Aircraft/Wing640/plugins/Betaflight-SITL
 You can change some settings for yours fly wing airplane in this setup file.
 
 The ***"Modes"*** section contains flight modes setup: Arm, Manual, Angle. The Acro is default.
-
 You can write in this section rc channels numbers and RC value to On flight mode.
 
 The ***"Input"*** section contains RC input settings. You should write rc aux channel numbers for *"throttle"*, *"stick_pitch"*, *"stick_roll"* controls.

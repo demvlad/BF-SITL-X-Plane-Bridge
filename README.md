@@ -83,6 +83,7 @@ You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these 
 4. Let's fly!
 
 You can use [Betaflight configurator](https://app.betaflight.com/) during simulation to check RC channels, flight modes state and Arm disabled flags.
+Look at ["SITL setup"](#sitl-setup) manual above.
 
 
 

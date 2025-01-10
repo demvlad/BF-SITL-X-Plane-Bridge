@@ -47,6 +47,16 @@ struct TXPlaneDataRefs
 		{
 			XPLMDataRef pressure;
 		} Baro;
+
+		struct TCoordsGPS
+		{
+			XPLMDataRef Latitude, Longitude, Altitude;
+		}CoordsGPS;
+
+		struct TGroundVelocity
+		{
+			XPLMDataRef Vx, Vy, Vz;
+		}GroundVelocity;
 	}PlaneState;
 
 	struct TPlaneControl

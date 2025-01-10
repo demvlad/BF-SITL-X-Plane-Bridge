@@ -8,6 +8,16 @@
 
 void TXPlaneData::Initialize()
 {
+	XPlaneDataRefs.PlaneState.CoordsGPS.Latitude = XPLMFindDataRef("sim/flightmodel/position/latitude");
+	XPlaneDataRefs.PlaneState.CoordsGPS.Longitude = XPLMFindDataRef("sim/flightmodel/position/longitude");
+	XPlaneDataRefs.PlaneState.CoordsGPS.Altitude = XPLMFindDataRef("sim/flightmodel/position/elevation");
+
+	XPlaneDataRefs.PlaneState.GroundVelocity.Vx = XPLMFindDataRef("sim/flightmodel/position/local_vx");
+	XPlaneDataRefs.PlaneState.GroundVelocity.Vy = XPLMFindDataRef("sim/flightmodel/position/local_vy");
+	XPlaneDataRefs.PlaneState.GroundVelocity.Vz = XPLMFindDataRef("sim/flightmodel/position/local_vz");
+
+	
+
 	XPlaneDataRefs.PlaneState.Angles.roll = XPLMFindDataRef("sim/flightmodel/position/phi");
 	XPlaneDataRefs.PlaneState.Angles.pitch = XPLMFindDataRef("sim/flightmodel/position/theta");
 	XPlaneDataRefs.PlaneState.Angles.yaw = XPLMFindDataRef("sim/flightmodel/position/psi");
@@ -81,7 +91,16 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
 	double roll  = XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.roll);
 	double pitch = -XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.pitch);
 	double yaw   = XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.yaw);
-	computeQuaternionFromRPY(m_pBetaflight->bfOutFlightState.imu_orientation_quat, roll, pitch, yaw);
+	computeQuaternionFromRPY(m_pBetaflight->bfOutFlightState.imu_orientation_quat, roll, pitch, -yaw);
+
+	m_pBetaflight->bfOutFlightState.position_xyz[0] = XPLMGetDataf(XPlaneDataRefs.PlaneState.CoordsGPS.Longitude);
+	m_pBetaflight->bfOutFlightState.position_xyz[1] = XPLMGetDataf(XPlaneDataRefs.PlaneState.CoordsGPS.Latitude);
+	m_pBetaflight->bfOutFlightState.position_xyz[2] = XPLMGetDataf(XPlaneDataRefs.PlaneState.CoordsGPS.Altitude);
+
+	m_pBetaflight->bfOutFlightState.velocity_xyz[0] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vx); //Veast
+	m_pBetaflight->bfOutFlightState.velocity_xyz[1] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vz); //Vnorth
+	m_pBetaflight->bfOutFlightState.velocity_xyz[2] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vy); //Vup
+
 
 	m_pBetaflight->bfOutFlightState.pressure = XPLMGetDataf(XPlaneDataRefs.PlaneState.Baro.pressure) * InHg2Pa;
 }

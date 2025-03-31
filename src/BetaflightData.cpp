@@ -140,48 +140,39 @@ void CBetaflightData::setAcroMode()
 	}
 }
 
-void CBetaflightData::setAngleMode()
+void CBetaflightData::setMode(std::string modeName)
 {
-	TModeRC AngleMode = SetupRC.Modes["angle"];
-	if (AngleMode.isEnabled())
-	{
-		setAcroMode();
-		bfOutCommandRC.channels[AngleMode.aux] = AngleMode.value;
+	if (SetupRC.Modes.count(modeName) == 0 ) {
+		return;
 	}
+
+	TModeRC mode = SetupRC.Modes[modeName];
+	setAcroMode();
+	bfOutCommandRC.channels[mode.aux] = mode.value;
 }
 
-void CBetaflightData::setManualMode()
-{
-	TModeRC ManualMode = SetupRC.Modes["manual"];
-	if (ManualMode.isEnabled())
-	{
-		setAcroMode();
-		bfOutCommandRC.channels[ManualMode.aux] = ManualMode.value;
-	}
-}
-
-void CBetaflightData::setThrottle(float throttle)
+void CBetaflightData::setThrottle(double throttle)
 {
 	TControlRC throttleSetup = SetupRC.Controls["throttle"];
 	if (throttleSetup.isEnabled())
 		bfOutCommandRC.channels[throttleSetup.aux] = (uint16_t) (PWM_MIN + (PWM_MAX - PWM_MIN) * throttle);
 }
 
-void CBetaflightData::setStickPitch(float stickPitch)
+void CBetaflightData::setStickPitch(double stickPitch)
 {
 	TControlRC pitchSetup = SetupRC.Controls["stick_pitch"];
 	if (pitchSetup.isEnabled())
 		bfOutCommandRC.channels[pitchSetup.aux] = (uint16_t) (PWM_MIN + 0.5 * (PWM_MAX - PWM_MIN)  * (stickPitch + 1.0));
 }
 
-void CBetaflightData::setStickRoll(float stickRoll)
+void CBetaflightData::setStickRoll(double stickRoll)
 {
 	TControlRC rollSetup = SetupRC.Controls["stick_roll"];
 	if (rollSetup.isEnabled())
 		bfOutCommandRC.channels[rollSetup.aux] = (uint16_t) (PWM_MIN + 0.5 * (PWM_MAX - PWM_MIN)  * (stickRoll + 1.0));
 }
 
-void CBetaflightData::setStickYaw(float stickYaw)
+void CBetaflightData::setStickYaw(double stickYaw)
 {
 	TControlRC yawSetup = SetupRC.Controls["stick_yaw"];
 	if (yawSetup.isEnabled())

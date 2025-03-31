@@ -58,9 +58,11 @@ void menu_handler(void * in_menu_ref, void * in_item_ref)
 	else if (!strcmp((char*)in_item_ref, "Menu Acro"))
 		betaFlightNet->setAcroMode();
 	else if (!strcmp((char*)in_item_ref, "Menu Manual"))
-		betaFlightNet->setManualMode();
+		betaFlightNet->setMode("manual");
 	else if (!strcmp((char*)in_item_ref, "Menu Angle"))
-		betaFlightNet->setAngleMode();
+		betaFlightNet->setMode("angle");
+	else if (!strcmp((char*)in_item_ref, "Menu Airplane"))
+		betaFlightNet->setMode("airplane");
 	else if (!strcmp((char*)in_item_ref, "Restart SITL"))
 		betaFlightNet->Restart();	
 }
@@ -89,9 +91,8 @@ PLUGIN_API int XPluginEnable(void)
 	int manual_id = XPLMAppendMenuItem(menu_id, "Manual", (void *)"Menu Manual", 1);
 	int acro_id = XPLMAppendMenuItem(menu_id, "Acro", (void *)"Menu Acro", 1);
 	int angle_id = XPLMAppendMenuItem(menu_id, "Angle", (void *)"Menu Angle", 1);
+	int airplane_id = XPLMAppendMenuItem(menu_id, "Airplane", (void *)"Menu Airplane", 1);
 	XPLMAppendMenuItem(menu_id, "Restart SITL", (void *)"Restart SITL", 1);
-
-	CXmlSetup setup;
     
 	return 1;
 }

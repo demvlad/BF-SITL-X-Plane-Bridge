@@ -27,13 +27,12 @@ public:
 	bool RecvData();
 
 	void setArm(bool on);
-	void setAngleMode();
 	void setAcroMode();
-	void setManualMode();
-	void setThrottle(float throttle);
-	void setStickPitch(float stickPitch);
-	void setStickRoll(float stickRoll);
-	void setStickYaw(float stickYaw);
+	void setMode(std::string modeName);
+	void setThrottle(double throttle);
+	void setStickPitch(double stickPitch);
+	void setStickRoll(double stickRoll);
+	void setStickYaw(double stickYaw);
 	~CBetaflightData(void);
 };
 

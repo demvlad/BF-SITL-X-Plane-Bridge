@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>win</TargetName>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\release\Aircraft\Extra Aircraft\Wing640\plugins\Betaflight-SITL\64</OutDir>
+    <OutDir>d:\X-Plane 11\Aircraft\Extra Aircraft\Wing640\plugins\Betaflight-SITL\64\</OutDir>
     <TargetExt>.xpl</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\release\Aircraft\Extra Aircraft\Wing640\plugins\Betaflight-SITL\64</OutDir>
+    <OutDir>d:\X-Plane 11\Aircraft\Extra Aircraft\Wing640\plugins\Betaflight-SITL\64\</OutDir>
     <TargetName>win</TargetName>
     <TargetExt>.xpl</TargetExt>
   </PropertyGroup>

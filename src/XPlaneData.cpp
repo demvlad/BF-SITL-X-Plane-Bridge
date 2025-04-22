@@ -80,9 +80,9 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
 	m_pBetaflight->bfOutCommandRC.timestamp = t;
 
 
-	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[0] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.x);
-	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[1] =  XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.y);
-	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[2] =  XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.z);
+        m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[0] = -9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.x);
+	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[1] =  9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.y);
+	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[2] =  9.81 * -XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.z);
 
 	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[0] =  XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.x) * DEG2RAD;
 	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[1] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.y) * DEG2RAD;

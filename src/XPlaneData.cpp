@@ -108,7 +108,7 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
 void TXPlaneData::updateBetaflightControlFromXPlane()
 {
 	float stickRoll = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.roll);
-	float stickPitch = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.pitch);
+	float stickPitch = -XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.pitch);
 	float stickYaw = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.yaw);
 
 	m_pBetaflight->setStickPitch(stickPitch);
@@ -153,7 +153,7 @@ void TXPlaneData::sendServoControlToXPlane()
 
 		if (EnabledPlaneControl.AileronsFromPitch)
 		{
-			pitchControl = 0.5f * (LeftServo + RightServo);			
+			pitchControl = -0.5f * (LeftServo + RightServo);			
 			XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
 		}
 	}
@@ -166,7 +166,7 @@ void TXPlaneData::sendServoControlToXPlane()
 
 	if (EnabledPlaneControl.Rudder)
 	{
-		yawControl = getOutput(ServoControls["rudder"]);
+		yawControl = -getOutput(ServoControls["rudder"]);
 		XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.yaw, yawControl);
 	}
 

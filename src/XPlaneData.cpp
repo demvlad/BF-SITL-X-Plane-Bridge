@@ -170,9 +170,11 @@ void TXPlaneData::sendServoControlToXPlane()
 		XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.yaw, yawControl);
 	}
 
+	bool isMotor1 = ServoControls["motor1"].isEnabled();
+	bool isMotor2 = ServoControls["motor2"].isEnabled();
 	float throttle[2] = { 
-		0.5f * (getOutput(ServoControls["motor1"]) + 1.0f),		// Translate [-1 ... +1] range to [0 ... +1]
-		0.5f * (getOutput(ServoControls["motor2"]) + 1.0f)
+		isMotor1 ? 0.5f * (getOutput(ServoControls["motor1"]) + 1.0f) : 0.0f,		// Translate [-1 ... +1] range to [0 ... +1]
+		isMotor2 ? 0.5f * (getOutput(ServoControls["motor2"]) + 1.0f) : 0.0f
 	};
 	XPLMSetDatavf(XPlaneDataRefs.PlaneControl.Throttle.output_throttle, throttle, 0, 2);
 }

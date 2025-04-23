@@ -4,15 +4,18 @@
     <Mode name = "arm" aux = "4" value = "1000"/>
     <Mode name = "manual" aux = "5" value = "1700"/>
     <Mode name = "angle" aux = "5" value = "1450"/>
+    <Mode name = "airplane" aux = "5" value = "1250"/>
   </Modes>
   <Input>
     <Control name = "throttle" aux = "0"/>
     <Control name = "stick_roll" aux = "1" />
     <Control name = "stick_pitch" aux = "2" />
+    <Control name = "stick_yaw" aux = "3" />
   </Input>
   <Output>
     <Control name = "motor1" servo = "0"/>
     <Control name = "aileron_left" servo = "1" reverse="true"/>
     <Control name = "aileron_right" servo = "2" />
+    <Control name = "rudder" servo = "4" />
   </Output>
 </setup>

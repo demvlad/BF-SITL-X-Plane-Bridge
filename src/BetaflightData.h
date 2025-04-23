@@ -12,6 +12,7 @@ class CBetaflightData
 	       sendto_fc_state_sock, sendto_fc_rc_sock; 
 	struct sockaddr_in dest;
 	TSetupRC SetupRC;
+	bool isConnected;
 public:
 	fdm_packet bfOutFlightState;
 	rc_packet bfOutCommandRC;

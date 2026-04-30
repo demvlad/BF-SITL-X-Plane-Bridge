@@ -16,12 +16,12 @@ void TXPlaneData::Initialize()
 	XPlaneDataRefs.PlaneState.GroundVelocity.Vy = XPLMFindDataRef("sim/flightmodel/position/local_vy");
 	XPlaneDataRefs.PlaneState.GroundVelocity.Vz = XPLMFindDataRef("sim/flightmodel/position/local_vz");
 
-	
+
 
 	XPlaneDataRefs.PlaneState.Angles.roll = XPLMFindDataRef("sim/flightmodel/position/phi");
 	XPlaneDataRefs.PlaneState.Angles.pitch = XPLMFindDataRef("sim/flightmodel/position/theta");
 	XPlaneDataRefs.PlaneState.Angles.yaw = XPLMFindDataRef("sim/flightmodel/position/psi");
-  
+
 
 	// Accelerometer
 	XPlaneDataRefs.PlaneState.Accel.x = XPLMFindDataRef("sim/flightmodel/forces/g_axil");
@@ -80,16 +80,16 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
 	m_pBetaflight->bfOutCommandRC.timestamp = t;
 
 
-        m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[0] = -9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.x);
-	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[1] =  9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.y);
-	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[2] =  9.81 * -XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.z);
+  m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[0] = 9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.x);
+	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[1] = 9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.y);
+	m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[2] = -9.81 *XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.z);
 
-	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[0] =  XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.x) * DEG2RAD;
-	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[1] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.y) * DEG2RAD;
-	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[2] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.z) * DEG2RAD;
+	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[0] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.x) * DEG2RAD;
+	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[1] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.y) * DEG2RAD;
+	m_pBetaflight->bfOutFlightState.imu_angular_velocity_rpy[2] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GyroRate.z) * DEG2RAD;
 
 	double roll  = XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.roll);
-	double pitch = -XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.pitch);
+	double pitch = XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.pitch);
 	double yaw   = XPLMGetDataf(XPlaneDataRefs.PlaneState.Angles.yaw);
 	computeQuaternionFromRPY(m_pBetaflight->bfOutFlightState.imu_orientation_quat, roll, pitch, -yaw);
 
@@ -100,7 +100,6 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
 	m_pBetaflight->bfOutFlightState.velocity_xyz[0] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vx); //Veast
 	m_pBetaflight->bfOutFlightState.velocity_xyz[1] = -XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vz); //Vnorth
 	m_pBetaflight->bfOutFlightState.velocity_xyz[2] = XPLMGetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vy); //Vup
-
 
 	m_pBetaflight->bfOutFlightState.pressure = XPLMGetDataf(XPlaneDataRefs.PlaneState.Baro.pressure) * InHg2Pa;
 }
@@ -139,7 +138,7 @@ float TXPlaneData::getOutput(const TServoControl& ctrl)
 }
 
 void TXPlaneData::sendServoControlToXPlane()
-{	
+{
 	float rollControl = 0.0f,
 		  pitchControl = 0.0f,
 		  yawControl = 0.0f;
@@ -153,11 +152,11 @@ void TXPlaneData::sendServoControlToXPlane()
 
 		if (EnabledPlaneControl.AileronsFromPitch)
 		{
-			pitchControl = -0.5f * (LeftServo + RightServo);			
+			pitchControl = -0.5f * (LeftServo + RightServo);
 			XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
 		}
 	}
-	
+
 	if (EnabledPlaneControl.Elevator)
 	{
 		pitchControl = getOutput(ServoControls["elevator"]);
@@ -172,7 +171,7 @@ void TXPlaneData::sendServoControlToXPlane()
 
 	bool isMotor1 = ServoControls["motor1"].isEnabled();
 	bool isMotor2 = ServoControls["motor2"].isEnabled();
-	float throttle[2] = { 
+	float throttle[2] = {
 		isMotor1 ? 0.5f * (getOutput(ServoControls["motor1"]) + 1.0f) : 0.0f,		// Translate [-1 ... +1] range to [0 ... +1]
 		isMotor2 ? 0.5f * (getOutput(ServoControls["motor2"]) + 1.0f) : 0.0f
 	};
@@ -195,4 +194,3 @@ void TXPlaneData::computeQuaternionFromRPY( double* quat, double roll, double pi
   quat[2] = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
   quat[3] = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
 }
-

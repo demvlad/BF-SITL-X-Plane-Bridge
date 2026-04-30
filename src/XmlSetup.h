@@ -109,8 +109,8 @@ struct TPlaneControl
 
 struct TSetupRC
 {
-	std::map <std::string, TModeRC> Modes; 
-	std::map <std::string, TControlRC> Controls; 
+	std::map <std::string, TModeRC> Modes;
+	std::map <std::string, TControlRC> Controls;
 };
 
 typedef std::map <std::string, TServoControl> TServoControls;
@@ -119,8 +119,9 @@ class CXmlSetup
 public:
 	CXmlSetup(void);
 	~CXmlSetup(void);
+    std::string sitl_ip_address;
 	TSetupRC SetupRC;
-	TServoControls ServoControls; 	
+	TServoControls ServoControls;
 	TPlaneControl PlaneControl;
 };
 

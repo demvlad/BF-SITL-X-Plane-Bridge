@@ -46,6 +46,11 @@ CXmlSetup::CXmlSetup(void)
 		bool reverse = servoCtrl.attribute("reverse").as_bool(false);
 		ServoControls[name] = TServoControl(name, servo, reverse);
 	}
+
+    pugi::xml_node sitl = pRoot.child("SITL");
+    if (sitl) {
+        sitl_ip_address = sitl.attribute("ip_address").as_string();
+    }
 }
 
 

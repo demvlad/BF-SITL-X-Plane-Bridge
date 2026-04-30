@@ -44,7 +44,7 @@ float floop_cb(float elapsed1, float elapsed2, int ctr, void* refcon)
 	simData->updateBetaflightControlFromXPlane();
 	simData->updateBetaflightStateFromXPlane();
 	betaFlightNet->SendData();
-	
+
 	return -1;
 }
 
@@ -64,7 +64,7 @@ void menu_handler(void * in_menu_ref, void * in_item_ref)
 	else if (!strcmp((char*)in_item_ref, "Menu Airplane"))
 		betaFlightNet->setMode("airplane");
 	else if (!strcmp((char*)in_item_ref, "Restart SITL"))
-		betaFlightNet->Restart();	
+		betaFlightNet->Restart();
 }
 
 PLUGIN_API int XPluginEnable(void)
@@ -93,7 +93,7 @@ PLUGIN_API int XPluginEnable(void)
 	int angle_id = XPLMAppendMenuItem(menu_id, "Angle", (void *)"Menu Angle", 1);
 	int airplane_id = XPLMAppendMenuItem(menu_id, "Airplane", (void *)"Menu Airplane", 1);
 	XPLMAppendMenuItem(menu_id, "Restart SITL", (void *)"Restart SITL", 1);
-    
+
 	return 1;
 }
 
@@ -102,6 +102,5 @@ PLUGIN_API void XPluginReceiveMessage(
 					int				inMessage,
 					void *			inParam)
 {
-	
-}
 
+}

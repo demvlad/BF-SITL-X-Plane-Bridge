@@ -125,6 +125,3 @@ public:
 
 	void computeQuaternionFromRPY(double* quat, double roll, double pitch, double yaw);
 };
-
-
-

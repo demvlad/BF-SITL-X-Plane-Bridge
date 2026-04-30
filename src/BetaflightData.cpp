@@ -6,13 +6,14 @@ CBetaflightData::CBetaflightData(const CXmlSetup& xmlSetup): sendto_fc_state_soc
                                                               isConnected(false)
 {
     SetupRC = xmlSetup.SetupRC;
+    sitl_ip_address = xmlSetup.sitl_ip_address;
 
     memset(&bfOutFlightState, 0, sizeof(bfOutFlightState));
     memset(&bfOutCommandRC, 0, sizeof(bfOutCommandRC));
     memset(&bfInMotors, 0, sizeof(bfInMotors));
     memset(&bfInServos, 0, sizeof(bfInServos));
     memset(&dest, 0, sizeof(dest));
-    
+
     bfOutFlightState.imu_orientation_quat[0] = 1.0;
     bfOutFlightState.imu_linear_acceleration_xyz[2] = 9.81;
     bfOutFlightState.pressure = 101325.0;
@@ -30,8 +31,8 @@ bool CBetaflightData::Initialize()
     }
     sendto_fc_state_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     sendto_fc_rc_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    recv_fc_motor_output_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP); 
-    recv_fc_pwm_output_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP); 
+    recv_fc_motor_output_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    recv_fc_pwm_output_sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     u_long iMode = 1;
     ioctlsocket(recv_fc_motor_output_sock, FIONBIO, &iMode);
@@ -39,21 +40,20 @@ bool CBetaflightData::Initialize()
 
     struct sockaddr_in local;
     memset(&local, 0, sizeof(local));
-    local.sin_family = AF_INET;        
+    local.sin_family = AF_INET;
     local.sin_addr.s_addr = INADDR_ANY;
 
-    local.sin_port = htons((uint16_t)PORT_PWM_RAW);  
+    local.sin_port = htons((uint16_t)PORT_PWM_RAW);
     bind(recv_fc_pwm_output_sock, (sockaddr*)&local, sizeof(local));
-    
-    local.sin_port = htons((uint16_t)PORT_PWM);  
+
+    local.sin_port = htons((uint16_t)PORT_PWM);
     bind(recv_fc_motor_output_sock, (sockaddr*)&local, sizeof(local));
-    
-    
-    dest.sin_family = AF_INET;        
-    dest.sin_addr.s_addr = inet_addr(BF_HOST);
+
+    dest.sin_family = AF_INET;
+    dest.sin_addr.s_addr = inet_addr(sitl_ip_address.empty() ? "0.0.0.0" : sitl_ip_address.c_str());
 
     isConnected = false;
-    
+
     return true;
 }
 
@@ -64,7 +64,7 @@ void CBetaflightData::Terminate()
 
     if (sendto_fc_rc_sock != INVALID_SOCKET)
         closesocket(sendto_fc_rc_sock);
-        
+
     if (recv_fc_motor_output_sock != INVALID_SOCKET)
         closesocket(recv_fc_motor_output_sock);
 
@@ -89,19 +89,19 @@ CBetaflightData::~CBetaflightData(void)
 bool CBetaflightData::SendData()
 {
     if (isConnected) {
-        dest.sin_port = htons((uint16_t)PORT_STATE);  
-        sendto(sendto_fc_state_sock, (const char*)&bfOutFlightState, sizeof(bfOutFlightState), 0, (sockaddr*)&dest, sizeof(dest));  
+        dest.sin_port = htons((uint16_t)PORT_STATE);
+        sendto(sendto_fc_state_sock, (const char*)&bfOutFlightState, sizeof(bfOutFlightState), 0, (sockaddr*)&dest, sizeof(dest));
 
-        dest.sin_port = htons((uint16_t)PORT_RC); 
-        sendto(sendto_fc_rc_sock, (const char*)&bfOutCommandRC, sizeof(bfOutCommandRC), 0, (sockaddr*)&dest, sizeof(dest)); 
+        dest.sin_port = htons((uint16_t)PORT_RC);
+        sendto(sendto_fc_rc_sock, (const char*)&bfOutCommandRC, sizeof(bfOutCommandRC), 0, (sockaddr*)&dest, sizeof(dest));
         return true;
-    } 
-    
+    }
+
     return false;
 }
 
 bool CBetaflightData::RecvData()
-{  
+{
     struct sockaddr_in from;
     int fromlen = sizeof(from);
     char buf[1024];
@@ -111,8 +111,10 @@ bool CBetaflightData::RecvData()
     res = recvfrom(recv_fc_pwm_output_sock, buf, sizeof(buf), 0, (sockaddr*)&from, &fromlen);
     if (res != -1)
     {
-        if (from.sin_addr.S_un.S_addr != dest.sin_addr.S_un.S_addr) {
-            dest.sin_addr.S_un.S_addr = from.sin_addr.S_un.S_addr;
+        if (!isConnected) {
+            if (sitl_ip_address.empty()) {
+                dest.sin_addr.S_un.S_addr = from.sin_addr.S_un.S_addr;
+            }
             isConnected = true;
         }
         memcpy(&bfInServos, buf, sizeof(bfInServos));
@@ -122,8 +124,10 @@ bool CBetaflightData::RecvData()
     res = recvfrom(recv_fc_motor_output_sock, buf, sizeof(buf), 0, (sockaddr*)&from, &fromlen);
     if (res != -1)
     {
-        if (from.sin_addr.S_un.S_addr != dest.sin_addr.S_un.S_addr) {
-            dest.sin_addr.S_un.S_addr = from.sin_addr.S_un.S_addr;
+        if (!isConnected) {
+            if (sitl_ip_address.empty()) {
+                dest.sin_addr.S_un.S_addr = from.sin_addr.S_un.S_addr;
+            }
             isConnected = true;
         }
         memcpy(&bfInMotors, buf, sizeof(bfInMotors));
@@ -136,7 +140,7 @@ void CBetaflightData::setArm(bool on)
 {
     TModeRC ArmMode = SetupRC.Modes["arm"];
     if (ArmMode.name != "")
-        bfOutCommandRC.channels[ArmMode.aux] = on ? ArmMode.value : 2000; 
+        bfOutCommandRC.channels[ArmMode.aux] = on ? ArmMode.value : 2000;
 }
 
 void CBetaflightData::setAcroMode()

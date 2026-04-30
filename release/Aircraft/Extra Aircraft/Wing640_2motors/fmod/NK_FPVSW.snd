@@ -1,0 +1,35 @@
+A
+1000
+ACF_SOUNDS
+
+BEGIN_SOUND_SPACE
+SOUND_INDEX 0
+BLEND_DEPTH 0.03
+AABB -0.58 0.40 -0.90 0.58 1.75 2.60
+END_SOUND_SPACE
+
+BEGIN_SOUND_ATTACHMENT
+EVENT_NAME /motor
+VEH_PART engine 0
+PARAM_DREF IDX 0
+EVENT_ALLOWED_FOR_AI
+EVENT_START_COND sim/flightmodel2/engines/engine_rotation_speed_rad_sec[0] > 1
+EVENT_END_COND sim/flightmodel2/engines/engine_rotation_speed_rad_sec[0] < 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+EVENT_NAME /motor2
+VEH_PART engine 0
+PARAM_DREF IDX 0
+EVENT_ALLOWED_FOR_AI
+EVENT_START_COND sim/flightmodel2/engines/engine_rotation_speed_rad_sec[0] > 1
+EVENT_END_COND sim/flightmodel2/engines/engine_rotation_speed_rad_sec[0] < 1
+END_SOUND_ATTACHMENT
+
+BEGIN_SOUND_ATTACHMENT
+EVENT_NAME /wind
+VEH_PART obja 12
+PARAM_DREF IDX 0
+EVENT_START_COND sim/flightmodel/position/groundspeed[0] > 0
+EVENT_END_COND sim/flightmodel/position/groundspeed[0] < 0
+END_SOUND_ATTACHMENT

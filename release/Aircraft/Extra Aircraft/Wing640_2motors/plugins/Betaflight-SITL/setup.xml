@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <setup>
-  <SITL ip_address="172.22.2.98"/>
+  <SITL ip_address="172.24.244.131"/>
   <Modes>
     <Mode name = "arm" aux = "4" value = "1000"/>
     <Mode name = "manual" aux = "5" value = "1700"/>
@@ -15,8 +15,8 @@
   </Input>
   <Output>
     <Control name = "motor1" servo = "0"/>
+    <Control name = "motor2" servo = "1"/>
     <Control name = "aileron_left" servo = "2"/>
     <Control name = "aileron_right" servo = "3" />
-    <Control name = "rudder" servo = "4" />
   </Output>
 </setup>

@@ -10,7 +10,7 @@ To run Betaflight SITL from Windows you need to install [Windows Linux Subsystem
 
 The link to [SITL using manual](https://betaflight.com/docs/development/sitl).
 
-To get last airplane SITL version you need to build [Betaflight](https://betaflight.com/) with [SITL](https://betaflight.com/docs/development/sitl) target by setting USE_WING options.  
+To get last airplane SITL version you need to build [Betaflight](https://betaflight.com/) with [SITL](https://betaflight.com/docs/development/sitl) target by setting USE_WING options. Use SITL_X_PLANE target for the new Betaflight 2026.6 version. 
 
 The example of ready to use compiled SITL file can be loaded from "release/SITL" directory of this repository. 
 

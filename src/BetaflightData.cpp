@@ -1,12 +1,11 @@
 #include "BetaflightData.h"
 
-
-CBetaflightData::CBetaflightData(const CXmlSetup& xmlSetup): sendto_fc_state_sock(INVALID_SOCKET), sendto_fc_rc_sock(INVALID_SOCKET),
+CBetaflightData::CBetaflightData(const CXmlSetup *pXmlSetup): sendto_fc_state_sock(INVALID_SOCKET), sendto_fc_rc_sock(INVALID_SOCKET),
                                                               recv_fc_motor_output_sock(INVALID_SOCKET), recv_fc_pwm_output_sock(INVALID_SOCKET),
-                                                              isConnected(false)
+                                                              isConnected(false),
+                                                              m_pSetupRC((TSetupRC *const)&pXmlSetup->SetupRC)
 {
-    SetupRC = xmlSetup.SetupRC;
-    sitl_ip_address = xmlSetup.sitl_ip_address;
+    sitl_ip_address = pXmlSetup->sitl_ip_address;
 
     memset(&bfOutFlightState, 0, sizeof(bfOutFlightState));
     memset(&bfOutCommandRC, 0, sizeof(bfOutCommandRC));
@@ -136,60 +135,40 @@ bool CBetaflightData::RecvData()
     return data_readed;
 }
 
-void CBetaflightData::setArm(bool on)
-{
-    TModeRC ArmMode = SetupRC.Modes["arm"];
-    if (ArmMode.name != "")
-        bfOutCommandRC.channels[ArmMode.aux] = on ? ArmMode.value : 2000;
-}
-
-void CBetaflightData::setAcroMode()
-{
-    TModeRC ArmMode = SetupRC.Modes["arm"];
-    for (int i=4; i < SIMULATOR_MAX_RC_CHANNELS; i++)
-    {
-        if (i != ArmMode.aux)
-        {
-            bfOutCommandRC.channels[i] = UNDEFINED_PWM_PULSE;
-        }
-    }
-}
-
 void CBetaflightData::setMode(std::string modeName)
 {
-    if (SetupRC.Modes.count(modeName) == 0 ) {
+    if (m_pSetupRC->Modes.count(modeName) == 0 ) {
         return;
     }
 
-    TModeRC mode = SetupRC.Modes[modeName];
-    setAcroMode();
+    TModeRC mode = m_pSetupRC->Modes[modeName];
     bfOutCommandRC.channels[mode.aux] = mode.value;
 }
 
 void CBetaflightData::setThrottle(double throttle)
 {
-    TControlRC throttleSetup = SetupRC.Controls["throttle"];
+    TControlRC throttleSetup = m_pSetupRC->Controls["throttle"];
     if (throttleSetup.isEnabled())
         bfOutCommandRC.channels[throttleSetup.aux] = (uint16_t) (PWM_MIN + (PWM_MAX - PWM_MIN) * throttle);
 }
 
 void CBetaflightData::setStickPitch(double stickPitch)
 {
-    TControlRC pitchSetup = SetupRC.Controls["stick_pitch"];
+    TControlRC pitchSetup = m_pSetupRC->Controls["stick_pitch"];
     if (pitchSetup.isEnabled())
         bfOutCommandRC.channels[pitchSetup.aux] = (uint16_t) (PWM_MIN + 0.5 * (PWM_MAX - PWM_MIN)  * (stickPitch + 1.0));
 }
 
 void CBetaflightData::setStickRoll(double stickRoll)
 {
-    TControlRC rollSetup = SetupRC.Controls["stick_roll"];
+    TControlRC rollSetup = m_pSetupRC->Controls["stick_roll"];
     if (rollSetup.isEnabled())
         bfOutCommandRC.channels[rollSetup.aux] = (uint16_t) (PWM_MIN + 0.5 * (PWM_MAX - PWM_MIN)  * (stickRoll + 1.0));
 }
 
 void CBetaflightData::setStickYaw(double stickYaw)
 {
-    TControlRC yawSetup = SetupRC.Controls["stick_yaw"];
+    TControlRC yawSetup = m_pSetupRC->Controls["stick_yaw"];
     if (yawSetup.isEnabled())
         bfOutCommandRC.channels[yawSetup.aux] = (uint16_t) (PWM_MIN + 0.5 * (PWM_MAX - PWM_MIN)  * (stickYaw + 1.0));
 }

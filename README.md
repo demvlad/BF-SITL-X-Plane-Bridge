@@ -61,8 +61,8 @@ You can copy "plugins" directory into your X-Plane model to use this Betaflight 
 The *setup.xml* (release/Aircraft/Extra Aircraft/Wing640/plugins/Betaflight-SITL/setup.xml) file contains setup follow my SITL/cli_setup_example.txt diff file.
 You can change some settings for yours fly wing airplane in this setup file.
 
-The ***"Modes"*** section contains flight modes setup: Arm, Manual, Angle. The Acro is default.
-You can write in this section rc channels numbers and RC value to On flight mode.
+The ***"Modes"*** section contains flight modes setup: Arm, Manual, Angle, Passthru, PSAS. The Acro is default.
+You can write in this section rc channels numbers and RC value to On flight mode. The X-Plane uses modes names to create Plugins->Betaflight menu.
 
 The ***"Input"*** section contains RC input settings. You should write rc aux channel numbers for *"throttle"*, *"stick_pitch"*, *"stick_roll"* controls.
 You can add *"stick_yaw"* row into this section if yours plane has rudder or 2-motors differencial control.

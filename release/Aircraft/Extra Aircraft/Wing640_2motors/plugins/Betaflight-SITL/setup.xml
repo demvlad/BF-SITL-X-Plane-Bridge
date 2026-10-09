@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <setup>
-  <SITL ip_address="172.24.244.131"/>
+  <SITL ip_address="172.24.38.131"/>
   <Modes>
-    <Mode name = "arm" aux = "4" value = "1000"/>
-    <Mode name = "manual" aux = "5" value = "1700"/>
-    <Mode name = "angle" aux = "5" value = "1450"/>
-    <Mode name = "airplane" aux = "5" value = "1250"/>
+    <Mode name = "Arm" aux = "4" value = "1000"/>
+    <Mode name = "Disarm" aux = "4" value = "2000"/>
+    <Mode name = "Acro" aux = "5" value = "0"/>
+    <Mode name = "PSAS" aux = "5" value = "1250"/>
+    <Mode name = "Angle" aux = "5" value = "1450"/>
+    <Mode name = "Passthru" aux = "5" value = "1700"/>
+    <Mode name = "AoA on" aux = "6" value = "2000"/>
+    <Mode name = "AoA off" aux = "6" value = "1000"/>
+    <Mode name = "Trim off" aux = "7" value = "1100"/>
+    <Mode name = "Trim hold" aux = "7" value = "1500"/>
+    <Mode name = "Trim adj" aux = "7" value = "2000"/>
   </Modes>
   <Input>
     <Control name = "throttle" aux = "0"/>

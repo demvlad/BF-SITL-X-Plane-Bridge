@@ -114,7 +114,7 @@ class TXPlaneData
 public:
     TXPlaneData(CBetaflightData *pBetaflight, const CXmlSetup *pXplSetup) : m_pBetaflight(pBetaflight),
                                                                             m_pServoControls((TServoControls* const)&pXplSetup->ServoControls)
-    {      
+    {
     };
 
     void Initialize();

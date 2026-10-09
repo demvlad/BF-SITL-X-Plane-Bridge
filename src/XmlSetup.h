@@ -30,8 +30,7 @@ struct TModeRC
         value = mode.value;
     }
 
-    bool isEnabled() const
-    {
+    bool isEnabled() const {
         return name != "";
     }
 };

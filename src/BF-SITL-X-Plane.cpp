@@ -10,7 +10,7 @@
 CBetaflightData *betaFlightNet;
 TXPlaneData *simData;
 XPLMFlightLoopID loopId;
-CXmlSetup *pSetupData;
+CXmlSetup *setupData;
 
 PLUGIN_API int XPluginStart(char *        outName,
                             char *        outSig,
@@ -19,7 +19,6 @@ PLUGIN_API int XPluginStart(char *        outName,
     strcpy(outName, "BetaflightXPlanePlugin");
     strcpy(outSig, "SITL.Betaflight.XPlanePlugin");
     strcpy(outDesc, "Betaflight SITL <-> X-Plane plugin");
-
     return true;
 }
 
@@ -36,9 +35,9 @@ PLUGIN_API void XPluginStop(void)
         delete simData;
         simData = NULL;
     }
-    if (pSetupData != NULL) {
-        delete pSetupData;
-        pSetupData = NULL;
+    if (setupData != NULL) {
+        delete setupData;
+        setupData = NULL;
     }
 }
 
@@ -58,16 +57,7 @@ float floop_cb(float elapsed1, float elapsed2, int ctr, void* refcon)
     return -1;
 }
 
-void menu_handler(void * in_menu_ref, void * in_item_ref)
-{
-    if (!strcmp((char*)in_item_ref, "Restart SITL")) {
-        betaFlightNet->Restart();
-    } else {
-        betaFlightNet->setMode((char*)in_item_ref);
-    }
-}
-
-void InitFlightLoop()
+void InitFlightLoop(void)
 {
     XPLMCreateFlightLoop_t params;
     params.structSize = sizeof(XPLMCreateFlightLoop_t);
@@ -78,12 +68,22 @@ void InitFlightLoop()
     XPLMScheduleFlightLoop(loopId, -1, true);
 }
 
+void menu_handler(void *in_menu_ref, void *in_item_ref)
+{
+    if (!strcmp((char*)in_item_ref, "Restart SITL")) {
+        betaFlightNet->Restart();
+    }
+    else {
+        betaFlightNet->setMode((char*)in_item_ref);
+    }
+}
+
 void CreateBetaflightMenu()
 {
     int menu_container_idx = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "Betaflight", 0, 0);
     XPLMMenuID menu_id = XPLMCreateMenu("SITL", XPLMFindPluginsMenu(), menu_container_idx, menu_handler, NULL);
-    for (std::size_t i = 0; i < pSetupData->SetupRC.ModeNames.size(); ++i) {
-        const char *name = pSetupData->SetupRC.ModeNames[i].c_str();
+    for (std::size_t i = 0; i < setupData->SetupRC.ModeNames.size(); ++i) {
+        const char *name = setupData->SetupRC.ModeNames[i].c_str();
         XPLMAppendMenuItem(menu_id, name, (void*)name, 1);
     }
 
@@ -93,9 +93,9 @@ void CreateBetaflightMenu()
 
 PLUGIN_API int XPluginEnable(void)
 {
-    pSetupData = new CXmlSetup;
-    betaFlightNet = new CBetaflightData(pSetupData);
-    simData = new TXPlaneData(betaFlightNet, pSetupData);
+    setupData = new CXmlSetup;
+    betaFlightNet = new CBetaflightData(setupData);
+    simData = new TXPlaneData(betaFlightNet, setupData);
 
     betaFlightNet->Initialize();
     simData->Initialize();

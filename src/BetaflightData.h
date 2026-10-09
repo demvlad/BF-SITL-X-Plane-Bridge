@@ -9,7 +9,7 @@
 class CBetaflightData
 {
     SOCKET recv_fc_motor_output_sock, recv_fc_pwm_output_sock,
-           sendto_fc_state_sock, sendto_fc_rc_sock; 
+           sendto_fc_state_sock, sendto_fc_rc_sock;
     struct sockaddr_in dest;
     TSetupRC* const m_pSetupRC;
     std::string sitl_ip_address;

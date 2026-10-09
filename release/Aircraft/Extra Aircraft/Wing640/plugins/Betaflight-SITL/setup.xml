@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <setup>
-  <SITL ip_address="172.22.2.98"/>
+  <SITL ip_address="172.18.229.218"/>
   <Modes>
-    <Mode name = "arm" aux = "4" value = "1000"/>
-    <Mode name = "manual" aux = "5" value = "1700"/>
-    <Mode name = "angle" aux = "5" value = "1450"/>
-    <Mode name = "airplane" aux = "5" value = "1250"/>
+    <Mode name = "Arm" aux = "4" value = "1000"/>
+    <Mode name = "Disarm" aux = "4" value = "2000"/>
+    <Mode name = "Acro" aux = "5" value = "0"/>
+    <Mode name = "PSAS" aux = "5" value = "1250"/>
+    <Mode name = "Angle" aux = "5" value = "1450"/>
+    <Mode name = "Passthru" aux = "5" value = "1700"/>
   </Modes>
   <Input>
     <Control name = "throttle" aux = "0"/>

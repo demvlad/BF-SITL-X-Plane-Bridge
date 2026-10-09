@@ -117,23 +117,27 @@ void TXPlaneData::updateBetaflightControlFromXPlane()
     float throttle;
     XPLMGetDatavf(XPlaneDataRefs.PlaneControl.Throttle.input_throttle, &throttle, 0, 1);
     m_pBetaflight->setThrottle(throttle);
-
 }
 
 float TXPlaneData::getOutput(const TServoControl& ctrl)
 {
-    if (!ctrl.isEnabled())
+    if (!ctrl.isEnabled()) {
         return 0.0f;
+    }
 
     float servoOutput = m_pBetaflight->bfInServos.pwm_output_raw[ctrl.servo];
-    if (servoOutput < PWM_MIN)
+    if (servoOutput < PWM_MIN) {
         servoOutput = PWM_MIN;
-    else if (servoOutput > PWM_MAX)
+    }
+    else if (servoOutput > PWM_MAX) {
         servoOutput = PWM_MAX;
+    }
+
     float output = 0.0;
     output = -1.0f + 2.0f * (servoOutput - PWM_MIN) / (PWM_MAX - PWM_MIN);
-    if (ctrl.reverse)
+    if (ctrl.reverse) {
         output *= -1.0f;
+    }
     return output;
 }
 
@@ -143,28 +147,24 @@ void TXPlaneData::sendServoControlToXPlane()
           pitchControl = 0.0f,
           yawControl = 0.0f;
 
-    if (EnabledPlaneControl.Ailerons)
-    {
+    if (EnabledPlaneControl.Ailerons) {
         float LeftServo = getOutput((*m_pServoControls)["aileron_left"]);
         float RightServo = getOutput((*m_pServoControls)["aileron_right"]);
         rollControl  = 0.5f * (LeftServo - RightServo);
         XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.roll, rollControl);
 
-        if (EnabledPlaneControl.AileronsFromPitch)
-        {
+        if (EnabledPlaneControl.AileronsFromPitch) {
             pitchControl = -0.5f * (LeftServo + RightServo);
             XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
         }
     }
 
-    if (EnabledPlaneControl.Elevator)
-    {
+    if (EnabledPlaneControl.Elevator) {
         pitchControl = getOutput((*m_pServoControls)["elevator"]);
         XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.pitch, pitchControl);
     }
 
-    if (EnabledPlaneControl.Rudder)
-    {
+    if (EnabledPlaneControl.Rudder) {
         yawControl = -getOutput((*m_pServoControls)["rudder"]);
         XPLMSetDataf(XPlaneDataRefs.PlaneControl.ActualControl.yaw, yawControl);
     }

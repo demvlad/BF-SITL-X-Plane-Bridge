@@ -58,4 +58,3 @@ typedef struct {
     uint16_t motorCount; // Count of motor in the PWM output.
     float pwm_output_raw[SIMULATOR_MAX_PWM_CHANNELS];   // Raw PWM from 1100 to 1900
 } servo_packet_raw;
-

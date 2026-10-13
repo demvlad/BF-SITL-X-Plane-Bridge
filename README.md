@@ -1,5 +1,5 @@
 # Betaflight SITL - X-Plane Bridge
-The bridge for connecting Betaflight SITL to X-Plane simulators airplane model 
+The bridge for connecting Betaflight SITL to X-Plane simulators airplane model
 
 The BF-SITL-X-Plane Bridge can be used for debug airplanes version of betaflight firmware.
 
@@ -10,16 +10,16 @@ To run Betaflight SITL from Windows you need to install [Windows Linux Subsystem
 
 The link to [SITL using manual](https://betaflight.com/docs/development/sitl).
 
-To get last airplane SITL version you need to build [Betaflight](https://betaflight.com/) with [SITL](https://betaflight.com/docs/development/sitl) target by setting USE_WING options. Use SITL_X_PLANE target for the new Betaflight 2026.6 version. Also set USE_GPS build option to use Virtual GPS. 
+To get last airplane SITL version you need to build [Betaflight](https://betaflight.com/) with [SITL](https://betaflight.com/docs/development/sitl) target by setting USE_WING options. Use SITL_X_PLANE target for the new Betaflight 2026.6 version. Also set USE_GPS build option to use Virtual GPS.
 
-The example of ready to use compiled SITL file can be loaded from "release/SITL" directory of this repository. 
+The example of ready to use compiled SITL file can be loaded from "release/SITL" directory of this repository.
 
 ## SITL setup
 1. To setup SITL by using [Betaflight configurator](https://app.betaflight.com/) you need to run [websockify proxy](https://github.com/novnc/websockify-other)
 
 Copy websockify file from "release/websockify" repository directory to your PC disk.
 
-2. Run WSL from command line by using cmd console. Go to your websockify directory and run websockify proxi server by command:  
+2. Run WSL from command line by using cmd console. Go to your websockify directory and run websockify proxi server by command:
 ./websockify 127.0.0.1:6761 127.0.0.1:5761
 ![websockify run](/images/websockfy.jpg)
 3. Run second WSL instance from command line by using cmd. Go to your SITL directory and run SITL: ./betaflight_SITL.elf
@@ -36,7 +36,7 @@ Copy websockify file from "release/websockify" repository directory to your PC d
 ![BF Configurator cli setup](/images/BF_cfg_cli.jpg)
 9. Restart SITL and Betaflight configurator, connect to SITL
 
-10. Go to Motors configurator tab and set motors protocol as PWM, save config.   
+10. Go to Motors configurator tab and set motors protocol as PWM, save config.
 ![BF Configurator cli setup](/images/BF_cfg_motors.jpg)
 11. Restart SITL and Betaflight configurator, connect to SITL, set pid loop freq on the configuration page (select 1k ... 8k), save config.
 ![BF Configurator cli setup](/images/BF_cfg_pid_loop.jpg)
@@ -46,7 +46,7 @@ The SITL is configured.
 Install [11 or 12 versions of X-Plane](https://www.x-plane.com/desktop/try-it/). The demo version can used for short test flights.
 
 ## Setup X-Plane airplane model
-***Aircraft\Extra Aircraft\Wing640*** directory contains model what is similar my airplane. This is flywing type airplane with one motors and ailerons control by roll and pitch together. The wingspan is 620mm, the weight is around 280g. 
+***Aircraft\Extra Aircraft\Wing640*** directory contains model what is similar my airplane. This is flywing type airplane with one motors and ailerons control by roll and pitch together. The wingspan is 620mm, the weight is around 280g.
 
 ***Copy this directory in X-Plane install path.***
 
@@ -54,7 +54,7 @@ This model is created in [x-plane maker](https://developer.x-plane.com/manuals/p
 
 
 **Notice:**
-If yours airplane has other controls (elevator, rudder, 2-motors) you need to create own X-Plane model in [plane maker](https://developer.x-plane.com/manuals/planemaker/). 
+If yours airplane has other controls (elevator, rudder, 2-motors) you need to create own X-Plane model in [plane maker](https://developer.x-plane.com/manuals/planemaker/).
 You can copy "plugins" directory into your X-Plane model to use this Betaflight SITL bridge.
 
 
@@ -69,6 +69,14 @@ You can add *"stick_yaw"* row into this section if yours plane has rudder or 2-m
 
 The ***"Output"*** section contains servo output settings. You can write servo numbers for *"motor1"*, *"aileron_left"*, *"aileron_right"* channels.
 You can add *"elevator"*, *"rudder"* or *"motor2"* row if yours plane has these controls. Use "reverse" flag to revert servo control.
+
+The ***SITL*** section is optional. Some WSL configurations pass incorrect IP address (Windows IP instead of WSL IP) to Windows host and X-Plane plugin can not answer on SITL request.
+The SITL does not connect to X-Plane by this reason. In this case set WSL IP directly to *ip_address* parameter of ***SITL*** section.
+Use ifconfig command in the WSL Ubuntu to get correct WSL IP address.
+
+Since 3.0 release, the X-Plane bridge creates "Launch" item in the Betaflight menu. This action throws plane like manual launch.
+The ***Launch*** xml section contains throw parameters: *pitch*, *accel_x*, *time* - the throw pitch [deg], push accel [g units], push time [sec].
+
 
 # Run X-Plane airplane model by using SITL control
 1. Run X-Plane and select Wing640 model. Start flight.

@@ -113,6 +113,13 @@ struct TSetupRC
     std::map <std::string, TControlRC> Controls;
 };
 
+struct TLaunchParams
+{
+    float pitch_deg;
+    float throwAccelX;
+    float throwTime;
+};
+
 typedef std::map <std::string, TServoControl> TServoControls;
 class CXmlSetup
 {
@@ -123,4 +130,5 @@ public:
     TSetupRC SetupRC;
     TServoControls ServoControls;
     TPlaneControl PlaneControl;
+    TLaunchParams LaunchParams;
 };

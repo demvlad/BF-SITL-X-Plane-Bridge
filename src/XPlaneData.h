@@ -93,6 +93,7 @@ struct TXPlaneDataRefs
             XPLMDataRef AileronFromPitch, Rudder;
         }PlaneControlLimit;
 
+        XPLMDataRef force_x;
     }PlaneControl;
 };
 
@@ -109,18 +110,27 @@ class TXPlaneData
     TXPlaneDataRefs XPlaneDataRefs;
     CBetaflightData* const m_pBetaflight;
     TServoControls* const m_pServoControls;
+    TLaunchParams * const m_pLaunchParams;
     TEnabledPlaneControl EnabledPlaneControl;
     float getOutput(const TServoControl& surface);
-public:
-    TXPlaneData(CBetaflightData *pBetaflight, const CXmlSetup *pXplSetup) : m_pBetaflight(pBetaflight),
-                                                                            m_pServoControls((TServoControls* const)&pXplSetup->ServoControls)
-    {
-    };
-
-    void Initialize();
+    void computeQuaternionFromRPY(double* quat, double roll, double pitch, double yaw);
     void updateBetaflightStateFromXPlane();
     void updateBetaflightControlFromXPlane();
     void sendServoControlToXPlane();
 
-    void computeQuaternionFromRPY(double* quat, double roll, double pitch, double yaw);
+    float m_throwTimer;
+    float m_throwForce;
+    void planeThrowUpdate(float step);
+    void setThrowPitch();
+public:
+    TXPlaneData(CBetaflightData *pBetaflight, const CXmlSetup *pXplSetup) : m_pBetaflight(pBetaflight),
+                                                                            m_pServoControls((TServoControls* const)&pXplSetup->ServoControls),
+                                                                            m_pLaunchParams((TLaunchParams* const )&pXplSetup->LaunchParams),
+                                                                            m_throwTimer(-100.0f), m_throwForce(0.0f)
+    {
+    };
+
+    void Initialize();
+    void Update(float step);
+    void planeLaunch();
 };

@@ -48,6 +48,16 @@ CXmlSetup::CXmlSetup(void)
     if (sitl) {
         sitl_ip_address = sitl.attribute("ip_address").as_string();
     }
+
+    LaunchParams.pitch_deg = 30.0f;
+    LaunchParams.throwAccelX = 5.0f;
+    LaunchParams.throwTime = 2.0f;
+    pugi::xml_node launch = pRoot.child("Launch");
+    if (sitl) {
+        LaunchParams.pitch_deg = launch.attribute("pitch").as_float(LaunchParams.pitch_deg);
+        LaunchParams.throwAccelX = launch.attribute("accel_x").as_float(LaunchParams.throwAccelX);
+        LaunchParams.throwTime = launch.attribute("time").as_float(LaunchParams.throwTime);
+    }
 }
 
 CXmlSetup::~CXmlSetup(void)

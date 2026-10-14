@@ -1,3 +1,12 @@
+# Building AutoComplete Cache ... Done!
+# 
+# diff all
+
+# version
+# Betaflight / SITL (SITL) 2026.12.0-alpha Oct 14 2026 / 08:28:25 (norevision) MSP API: 1.49
+# config rev: 290369e
+
+# start the command batch
 batch start
 
 # reset configuration to default settings
@@ -12,10 +21,6 @@ signature
 feature -TELEMETRY
 feature -AIRMODE
 feature MOTOR_STOP
-
-# serial
-serial UART3 128 115200 57600 0 250000
-serial UART5 2048 115200 57600 0 115200
 
 # mixer
 mixer CUSTOMAIRPLANE
@@ -32,16 +37,19 @@ smix 3 2 1 100 0 0 100 0
 map TAER1234
 
 # aux
-aux 0 0 0 900 1075 0 0
-aux 1 1 1 1375 1475 0 0
-aux 2 2 1 1450 1550 0 0
-aux 3 12 1 1675 1775 0 0
-aux 4 59 1 1125 1275 0 0
-aux 5 60 2 900 1075 0 0
+aux 0 0 0 1975 2025 0 0
+aux 1 1 1 1075 1125 0 0
+aux 2 2 1 1175 1225 0 0
+aux 3 59 1 1275 1325 0 0
+aux 4 12 1 1375 1425 0 0
+aux 5 60 2 1975 2025 0 0
+aux 6 58 4 1975 2025 0 0
+aux 7 46 5 1075 1125 0 0
+aux 8  3 5 1175 1225 0 0
+aux 9 11 5 1275 1325 0 0
 
 # adjrange
 adjrange 0 0 3 900 2100 34 3 0 0
-
 
 # master
 set gyro_lpf1_static_hz = 0
@@ -52,11 +60,17 @@ set acc_calibration = -9,0,-8,1
 set baro_hardware = AUTO
 set blackbox_sample_rate = 1/16
 set blackbox_device = VIRTUAL
+set blackbox_disable_bat = ON
+set blackbox_disable_mag = ON
+set blackbox_disable_rssi = ON
+set blackbox_disable_gyrounfilt = ON
+set blackbox_uart = UART3
+set blackbox_baud = 250000
 set motor_idle = 500
 set small_angle = 180
-set pid_process_denom = 8
+set launch_timeout = 10000
 set simplified_gyro_filter = OFF
-set debug_mode = PSAS
+set debug_mode = LAUNCH
 
 profile 0
 
@@ -85,7 +99,6 @@ set s_roll = 25
 set angle_p_gain = 20
 set d_max_roll = 0
 set d_max_pitch = 0
-set d_max_gain = 0
 set d_max_advance = 0
 set simplified_pids_mode = OFF
 set simplified_dterm_filter = OFF
@@ -100,8 +113,9 @@ set psas_speed_roll_stick_enable = ON
 set psas_speed_roll_main_enable = ON
 set psas_speed_yaw_stick_enable = ON
 set psas_speed_yaw_main_enable = ON
-set psas_speed_use_gps = ON
-
+set psas_trim_enabled_roll = ON
+set psas_trim_enabled_pitch = ON
+set psas_trim_enabled_yaw = ON
 
 profile 1
 
@@ -132,7 +146,6 @@ set angle_p_gain = 20
 set angle_limit = 45
 set d_max_roll = 20
 set d_max_pitch = 20
-set d_max_gain = 0
 set d_max_advance = 0
 set simplified_pids_mode = OFF
 set simplified_dterm_filter = OFF
@@ -156,7 +169,7 @@ set roll_expo = 25
 set roll_srate = 25
 set pitch_srate = 10
 set yaw_srate = 1
-set throttle_limit_type = SCALE
+set throttle_limit_type = OFF
 set throttle_limit_percent = 90
 
 rateprofile 1
@@ -169,7 +182,7 @@ set roll_expo = 25
 set roll_srate = 25
 set pitch_srate = 5
 set yaw_srate = 1
-set throttle_limit_type = SCALE
+set throttle_limit_type = OFF
 set throttle_limit_percent = 90
 
 rateprofile 2
@@ -182,7 +195,7 @@ set roll_expo = 25
 set roll_srate = 25
 set pitch_srate = 5
 set yaw_srate = 1
-set throttle_limit_type = SCALE
+set throttle_limit_type = OFF
 set throttle_limit_percent = 90
 
 rateprofile 3
@@ -195,7 +208,7 @@ set roll_expo = 25
 set roll_srate = 25
 set pitch_srate = 5
 set yaw_srate = 1
-set throttle_limit_type = SCALE
+set throttle_limit_type = OFF
 set throttle_limit_percent = 90
 
 battery_profile 0
@@ -212,3 +225,6 @@ rateprofile 1
 
 # restore original battery_profile selection
 battery_profile 0
+
+# save configuration
+save

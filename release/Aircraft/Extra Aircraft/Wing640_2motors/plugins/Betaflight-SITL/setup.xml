@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <setup>
-  <SITL ip_address="172.24.38.131"/>
+  <SITL ip_address="172.24.237.40"/>
   <Modes>
-    <Mode name = "Arm" aux = "4" value = "1000"/>
-    <Mode name = "Disarm" aux = "4" value = "2000"/>
-    <Mode name = "Acro" aux = "5" value = "0"/>
-    <Mode name = "PSAS" aux = "5" value = "1250"/>
-    <Mode name = "Angle" aux = "5" value = "1450"/>
-    <Mode name = "Passthru" aux = "5" value = "1700"/>
+    <Mode name = "Arm" aux = "4" value = "2000"/>
+    <Mode name = "Disarm" aux = "4" value = "1000"/>
+    <Mode name = "Launch on" aux = "8" value = "2000"/>
+    <Mode name = "Launch off" aux = "8" value = "900"/>
+    <Mode name = "Acro" aux = "5" value = "900"/>
+    <Mode name = "Angle" aux = "5" value = "1100"/>
+    <Mode name = "Horizon" aux = "5" value = "1200"/>
+    <Mode name = "PSAS" aux = "5" value = "1300"/>
+    <Mode name = "Passthru" aux = "5" value = "1400"/>
     <Mode name = "AoA on" aux = "6" value = "2000"/>
     <Mode name = "AoA off" aux = "6" value = "1000"/>
-    <Mode name = "Trim off" aux = "7" value = "1100"/>
+    <Mode name = "Trim off" aux = "7" value = "1000"/>
     <Mode name = "Trim hold" aux = "7" value = "1500"/>
     <Mode name = "Trim adj" aux = "7" value = "2000"/>
+    <Mode name = "RTH" aux = "9" value = "1100"/>
+    <Mode name = "ALT HOLD" aux = "9" value = "1200"/>
+    <Mode name = "POS HOLD" aux = "9" value = "1300"/>
+    <Mode name = "NAV OFF" aux = "9" value = "900"/>
   </Modes>
   <Input>
     <Control name = "throttle" aux = "0"/>
@@ -26,4 +33,5 @@
     <Control name = "aileron_left" servo = "2"/>
     <Control name = "aileron_right" servo = "3" />
   </Output>
+  <Launch pitch="30" accel_x="4" time="0.5"/>
 </setup>

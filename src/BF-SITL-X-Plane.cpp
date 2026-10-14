@@ -47,14 +47,15 @@ PLUGIN_API void XPluginDisable(void)
 
 float floop_cb(float elapsed1, float elapsed2, int ctr, void* refcon)
 {
-    betaFlightNet->RecvData();
-    simData->sendServoControlToXPlane();
+    if (betaFlightNet == NULL || simData == NULL) {
+        return 0.0f;
+    }
 
-    simData->updateBetaflightControlFromXPlane();
-    simData->updateBetaflightStateFromXPlane();
+    betaFlightNet->RecvData();
+    simData->Update(elapsed1);
     betaFlightNet->SendData();
 
-    return -1;
+    return -1.0f;
 }
 
 void InitFlightLoop(void)
@@ -72,8 +73,9 @@ void menu_handler(void *in_menu_ref, void *in_item_ref)
 {
     if (!strcmp((char*)in_item_ref, "Restart SITL")) {
         betaFlightNet->Restart();
-    }
-    else {
+    } else if (!strcmp((char*)in_item_ref, "Launch plane")) {
+        simData->planeLaunch();
+    } else {
         betaFlightNet->setMode((char*)in_item_ref);
     }
 }
@@ -82,6 +84,8 @@ void CreateBetaflightMenu()
 {
     int menu_container_idx = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "Betaflight", 0, 0);
     XPLMMenuID menu_id = XPLMCreateMenu("SITL", XPLMFindPluginsMenu(), menu_container_idx, menu_handler, NULL);
+    XPLMAppendMenuItem(menu_id, "Launch plane", (void *)"Launch plane", 1);
+    XPLMAppendMenuSeparator(menu_id);
     for (std::size_t i = 0; i < setupData->SetupRC.ModeNames.size(); ++i) {
         const char *name = setupData->SetupRC.ModeNames[i].c_str();
         XPLMAppendMenuItem(menu_id, name, (void*)name, 1);

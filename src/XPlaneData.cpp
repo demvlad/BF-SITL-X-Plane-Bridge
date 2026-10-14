@@ -69,6 +69,7 @@ void TXPlaneData::Initialize()
                                  || XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Down) > 0.0f;
     EnabledPlaneControl.Rudder = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Rudder) > 0.0f;
 
+    XPlaneDataRefs.PlaneControl.force_x = XPLMFindDataRef("sim/flightmodel/forces/faxil_plug_acf");
 }
 
 
@@ -193,4 +194,73 @@ void TXPlaneData::computeQuaternionFromRPY( double* quat, double roll, double pi
   quat[1] = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
   quat[2] = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
   quat[3] = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+}
+
+void TXPlaneData::Update(float step)
+{
+    sendServoControlToXPlane();
+    updateBetaflightControlFromXPlane();
+    updateBetaflightStateFromXPlane();
+    planeThrowUpdate(step);
+}
+
+void TXPlaneData::planeThrowUpdate(float step)
+{
+    if (m_throwTimer > 0.0f) {
+        XPLMSetDataf(XPlaneDataRefs.PlaneControl.force_x, m_throwForce);
+        m_throwTimer -= step;
+    }
+    else if (m_throwTimer > -99.0f) {
+        XPLMSetDataf(XPlaneDataRefs.PlaneControl.force_x, 0.0f);
+        m_throwTimer = -100.0f;
+    }
+}
+
+void TXPlaneData::setThrowPitch()
+{
+    XPLMDataRef qRef = XPLMFindDataRef("sim/flightmodel/position/q");
+
+    float q[4];
+    XPLMGetDatavf(qRef, q, 0, 4);
+    float w = q[0],
+        x = q[1],
+        y = q[2],
+        z = q[3];
+    float sinr_cosp = 2.0f * (w * x + y * z);
+    float cosr_cosp = 1.0f - 2.0f * (x * x + y * y);
+    float phi = atan2f(sinr_cosp, cosr_cosp);
+
+    float siny_cosp = 2.0f * (w * z + x * y);
+    float cosy_cosp = 1.0f - 2.0f * (y * y + z * z);
+    float psi = atan2f(siny_cosp, cosy_cosp);
+
+    float pitch = (float)(m_pLaunchParams->pitch_deg * DEG2RAD);
+
+    float cr = cosf(phi * 0.5f);
+    float sr = sinf(phi * 0.5f);
+    float cp = cosf(pitch * 0.5f);
+    float sp = sinf(pitch * 0.5f);
+    float cy = cosf(psi * 0.5f);
+    float sy = sinf(psi * 0.5f);
+
+    q[0] = cr * cp * cy + sr * sp * sy;
+    q[1] = sr * cp * cy - cr * sp * sy;
+    q[2] = cr * sp * cy + sr * cp * sy;
+    q[3] = cr * cp * sy - sr * sp * cy;
+
+    XPLMSetDatavf(qRef, q, 0, 4);
+}
+
+void TXPlaneData::planeLaunch()
+{
+    m_throwTimer = m_pLaunchParams->throwTime;
+    const XPLMDataRef massaRef = XPLMFindDataRef("sim/flightmodel/weight/m_total");
+    float planeMassa = XPLMGetDataf(massaRef);
+    if (planeMassa < 0.1f) {
+        planeMassa = 0.1f;
+    }
+    m_throwForce = -planeMassa * m_pLaunchParams->throwAccelX * 9.81f;
+
+    setThrowPitch();
+    XPLMSetDataf(XPlaneDataRefs.PlaneState.GroundVelocity.Vx, 1.0f);
 }

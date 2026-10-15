@@ -7,11 +7,9 @@
 
 struct TXPlaneDataRefs
 {
-    struct TPlaneState
-    {
+    struct TPlaneState {
         //Angles
-        struct TAngles
-        {
+        struct TAngles {
             //degrees, the roll of the aircraft in degrees - OpenGL coordinates
             XPLMDataRef roll;
             //degrees, the pitch relative to the plane normal to the Y axis in degrees - OpenGL coordinates
@@ -21,8 +19,7 @@ struct TXPlaneDataRefs
         } Angles;
 
         // accel
-        struct TAccel
-        {
+        struct TAccel {
             //Gs, total g-forces on the plane as a multiple, along the plane, forward - negative
             XPLMDataRef x;
             //Gs, total g-forces on the plane as a multiple, sideways, right - negative
@@ -32,8 +29,7 @@ struct TXPlaneDataRefs
         } Accel;
 
         // gyro
-        struct TGyroRate
-        {
+        struct TGyroRate {
             //degrees, the roll of the aircraft in degrees - OpenGL coordinates
             XPLMDataRef x;
             //deg/sec, the pitch rotation rates (relative to the flight)
@@ -43,51 +39,42 @@ struct TXPlaneDataRefs
         } GyroRate;
             // baro
         //This is the barometric pressure at the point the current flight is at.
-        struct TBaro
-        {
+        struct TBaro {
             XPLMDataRef pressure;
         } Baro;
 
-        struct TCoordsGPS
-        {
+        struct TCoordsGPS {
             XPLMDataRef Latitude, Longitude, Altitude;
         }CoordsGPS;
 
-        struct TGroundVelocity
-        {
+        struct TGroundVelocity {
             XPLMDataRef Vx, Vy, Vz;
         }GroundVelocity;
     }PlaneState;
 
-    struct TPlaneControl
-    {
-        struct TThrottle
-        {
+    struct TPlaneControl {
+        struct TThrottle {
             XPLMDataRef override_throttle;
             XPLMDataRef input_throttle;
             XPLMDataRef output_throttle;
         } Throttle;
 
-        struct TStick
-        {
+        struct TStick {
             XPLMDataRef override_joystick_control;
             XPLMDataRef roll;
             XPLMDataRef pitch;
             XPLMDataRef yaw;
         } Stick;
 
-        struct TActualControl
-        {
+        struct TActualControl {
             XPLMDataRef override_flight_control;
             XPLMDataRef roll;
             XPLMDataRef pitch;
             XPLMDataRef yaw;
         }ActualControl;
 
-        struct TPlaneControlLimit
-        {
-            struct
-            {
+        struct TPlaneControlLimit {
+            struct {
                 XPLMDataRef Up, Down;
             } Aileron, Elevator;
             XPLMDataRef AileronFromPitch, Rudder;
@@ -95,18 +82,20 @@ struct TXPlaneDataRefs
 
         XPLMDataRef force_x;
     }PlaneControl;
+
+    struct TSimulation {
+        XPLMDataRef RunningTime;
+    }Simulation;
 };
 
-struct TEnabledPlaneControl
-{
+struct TEnabledPlaneControl {
     bool Ailerons;
     bool AileronsFromPitch;
     bool Elevator;
     bool Rudder;
 };
 
-class TXPlaneData
-{
+class TXPlaneData {
     TXPlaneDataRefs XPlaneDataRefs;
     CBetaflightData* const m_pBetaflight;
     TServoControls* const m_pServoControls;

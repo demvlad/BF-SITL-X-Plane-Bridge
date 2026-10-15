@@ -16,12 +16,9 @@ void TXPlaneData::Initialize()
     XPlaneDataRefs.PlaneState.GroundVelocity.Vy = XPLMFindDataRef("sim/flightmodel/position/local_vy");
     XPlaneDataRefs.PlaneState.GroundVelocity.Vz = XPLMFindDataRef("sim/flightmodel/position/local_vz");
 
-
-
     XPlaneDataRefs.PlaneState.Angles.roll = XPLMFindDataRef("sim/flightmodel/position/phi");
     XPlaneDataRefs.PlaneState.Angles.pitch = XPLMFindDataRef("sim/flightmodel/position/theta");
     XPlaneDataRefs.PlaneState.Angles.yaw = XPLMFindDataRef("sim/flightmodel/position/psi");
-
 
     // Accelerometer
     XPlaneDataRefs.PlaneState.Accel.x = XPLMFindDataRef("sim/flightmodel/forces/g_axil");
@@ -61,25 +58,22 @@ void TXPlaneData::Initialize()
     XPLMSetDatai(XPlaneDataRefs.PlaneControl.ActualControl.override_flight_control, 1);
     XPLMSetDatai(XPlaneDataRefs.PlaneControl.Throttle.override_throttle, 1);
 
-
     EnabledPlaneControl.Ailerons = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Up) > 0.0f
                                  || XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Aileron.Down) > 0.0f;
     EnabledPlaneControl.AileronsFromPitch = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.AileronFromPitch) > 0.0f;
     EnabledPlaneControl.Elevator = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Up) > 0.0f
                                  || XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Elevator.Down) > 0.0f;
     EnabledPlaneControl.Rudder = XPLMGetDataf(XPlaneDataRefs.PlaneControl.PlaneControlLimit.Rudder) > 0.0f;
-
     XPlaneDataRefs.PlaneControl.force_x = XPLMFindDataRef("sim/flightmodel/forces/faxil_plug_acf");
+
+    XPlaneDataRefs.Simulation.RunningTime = XPLMFindDataRef("sim/time/total_running_time_sec");
 }
-
-
 
 void TXPlaneData::updateBetaflightStateFromXPlane()
 {
-    double t = GetTickCount() * 0.001;
+    double t = XPLMGetDataf(XPlaneDataRefs.Simulation.RunningTime);
     m_pBetaflight->bfOutFlightState.timestamp = t;
     m_pBetaflight->bfOutCommandRC.timestamp = t;
-
 
     m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[0] = 9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.x);
     m_pBetaflight->bfOutFlightState.imu_linear_acceleration_xyz[1] = 9.81 * XPLMGetDataf(XPlaneDataRefs.PlaneState.Accel.y);

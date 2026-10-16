@@ -1,6 +1,6 @@
-#include "BetaflightData.h"
+#include "BetaflightLink.h"
 
-CBetaflightData::CBetaflightData(const CXmlSetup *pXmlSetup): sendto_fc_state_sock(INVALID_SOCKET), sendto_fc_rc_sock(INVALID_SOCKET),
+CBetaflightLink::CBetaflightLink(const CXmlSetup *pXmlSetup): sendto_fc_state_sock(INVALID_SOCKET), sendto_fc_rc_sock(INVALID_SOCKET),
                                                               recv_fc_motor_output_sock(INVALID_SOCKET), recv_fc_pwm_output_sock(INVALID_SOCKET),
                                                               isConnected(false),
                                                               m_pSetupRC((TSetupRC *const)&pXmlSetup->SetupRC)
@@ -22,7 +22,7 @@ CBetaflightData::CBetaflightData(const CXmlSetup *pXmlSetup): sendto_fc_state_so
     }
 }
 
-bool CBetaflightData::Initialize()
+bool CBetaflightLink::Initialize()
 {
     WSADATA WSAData;
     if (WSAStartup(MAKEWORD(1, 1), &WSAData) != 0) {
@@ -57,7 +57,7 @@ bool CBetaflightData::Initialize()
     return true;
 }
 
-void CBetaflightData::Terminate()
+void CBetaflightLink::Terminate()
 {
     if (sendto_fc_state_sock != INVALID_SOCKET) {
         closesocket(sendto_fc_state_sock);
@@ -78,18 +78,18 @@ void CBetaflightData::Terminate()
     WSACleanup();
 }
 
-void CBetaflightData::Restart()
+void CBetaflightLink::Restart()
 {
     Terminate();
     Initialize();
 }
 
-CBetaflightData::~CBetaflightData(void)
+CBetaflightLink::~CBetaflightLink(void)
 {
     Terminate();
 }
 
-bool CBetaflightData::SendData()
+bool CBetaflightLink::sendFlightState()
 {
     if (isConnected) {
         dest.sin_port = htons((uint16_t)PORT_STATE);
@@ -103,7 +103,7 @@ bool CBetaflightData::SendData()
     return false;
 }
 
-bool CBetaflightData::RecvData()
+bool CBetaflightLink::receiveMotorCommands()
 {
     struct sockaddr_in from;
     int fromlen = sizeof(from);
@@ -137,7 +137,7 @@ bool CBetaflightData::RecvData()
     return data_readed;
 }
 
-void CBetaflightData::setMode(std::string modeName)
+void CBetaflightLink::setMode(std::string modeName)
 {
     if (m_pSetupRC->Modes.count(modeName) == 0 ) {
         return;
@@ -147,7 +147,7 @@ void CBetaflightData::setMode(std::string modeName)
     bfOutCommandRC.channels[mode.aux] = mode.value;
 }
 
-void CBetaflightData::setThrottle(double throttle)
+void CBetaflightLink::setThrottle(double throttle)
 {
     const TControlRC& throttleSetup = m_pSetupRC->Controls["throttle"];
     if (throttleSetup.isEnabled()) {
@@ -155,7 +155,7 @@ void CBetaflightData::setThrottle(double throttle)
     }
 }
 
-void CBetaflightData::setStickPitch(double stickPitch)
+void CBetaflightLink::setStickPitch(double stickPitch)
 {
     const TControlRC& pitchSetup = m_pSetupRC->Controls["stick_pitch"];
     if (pitchSetup.isEnabled()) {
@@ -163,7 +163,7 @@ void CBetaflightData::setStickPitch(double stickPitch)
     }
 }
 
-void CBetaflightData::setStickRoll(double stickRoll)
+void CBetaflightLink::setStickRoll(double stickRoll)
 {
     const TControlRC& rollSetup = m_pSetupRC->Controls["stick_roll"];
     if (rollSetup.isEnabled()) {
@@ -171,7 +171,7 @@ void CBetaflightData::setStickRoll(double stickRoll)
     }
 }
 
-void CBetaflightData::setStickYaw(double stickYaw)
+void CBetaflightLink::setStickYaw(double stickYaw)
 {
     const TControlRC& yawSetup = m_pSetupRC->Controls["stick_yaw"];
     if (yawSetup.isEnabled()) {

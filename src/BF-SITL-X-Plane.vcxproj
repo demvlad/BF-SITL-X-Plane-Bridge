@@ -161,16 +161,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\pugixml\pugixml.cpp" />
-    <ClCompile Include="BetaflightData.cpp" />
+    <ClCompile Include="BetaflightLink.cpp" />
     <ClCompile Include="BF-SITL-X-Plane.cpp" />
     <ClCompile Include="XmlSetup.cpp" />
-    <ClCompile Include="XPlaneData.cpp" />
+    <ClCompile Include="XPlaneAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="betaflight.h" />
-    <ClInclude Include="BetaflightData.h" />
+    <ClInclude Include="BetaflightLink.h" />
     <ClInclude Include="XmlSetup.h" />
-    <ClInclude Include="XPlaneData.h" />
+    <ClInclude Include="XPlaneAdapter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

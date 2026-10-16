@@ -3,14 +3,14 @@
 #include <XPLMUtilities.h>
 #include <XPLMMenus.h>
 #include <XPLMProcessing.h>
-#include "BetaflightData.h"
-#include "XPlaneData.h"
+#include "BetaflightLink.h"
+#include "XPlaneAdapter.h"
 #include "XmlSetup.h"
 
-CBetaflightData *betaFlightNet;
-TXPlaneData *simData;
-XPLMFlightLoopID loopId;
-CXmlSetup *setupData;
+static CBetaflightLink *betaFlightLink;
+static CXPlaneAdapter *xplaneAdapter;
+static XPLMFlightLoopID loopId;
+static CXmlSetup *setupData;
 
 PLUGIN_API int XPluginStart(char *        outName,
                             char *        outSig,
@@ -24,16 +24,16 @@ PLUGIN_API int XPluginStart(char *        outName,
 
 PLUGIN_API void XPluginStop(void)
 {
-    betaFlightNet->Terminate();
+    betaFlightLink->Terminate();
     XPLMDestroyFlightLoop(loopId);
 
-    if (betaFlightNet != NULL) {
-        delete betaFlightNet;
-        betaFlightNet = NULL;
+    if (betaFlightLink != NULL) {
+        delete betaFlightLink;
+        betaFlightLink = NULL;
     }
-    if (simData != NULL) {
-        delete simData;
-        simData = NULL;
+    if (xplaneAdapter != NULL) {
+        delete xplaneAdapter;
+        xplaneAdapter = NULL;
     }
     if (setupData != NULL) {
         delete setupData;
@@ -47,13 +47,13 @@ PLUGIN_API void XPluginDisable(void)
 
 float floop_cb(float elapsed1, float elapsed2, int ctr, void* refcon)
 {
-    if (betaFlightNet == NULL || simData == NULL) {
+    if (betaFlightLink == NULL || xplaneAdapter == NULL) {
         return 0.0f;
     }
 
-    betaFlightNet->RecvData();
-    simData->Update(elapsed1);
-    betaFlightNet->SendData();
+    betaFlightLink->receiveMotorCommands();
+    xplaneAdapter->Update(elapsed1);
+    betaFlightLink->sendFlightState();
 
     return -1.0f;
 }
@@ -72,11 +72,11 @@ void InitFlightLoop(void)
 void menu_handler(void *in_menu_ref, void *in_item_ref)
 {
     if (!strcmp((char*)in_item_ref, "Restart SITL")) {
-        betaFlightNet->Restart();
+        betaFlightLink->Restart();
     } else if (!strcmp((char*)in_item_ref, "Launch plane")) {
-        simData->planeLaunch();
+        xplaneAdapter->planeLaunch();
     } else {
-        betaFlightNet->setMode((char*)in_item_ref);
+        betaFlightLink->setMode((char*)in_item_ref);
     }
 }
 
@@ -98,11 +98,11 @@ void CreateBetaflightMenu()
 PLUGIN_API int XPluginEnable(void)
 {
     setupData = new CXmlSetup;
-    betaFlightNet = new CBetaflightData(setupData);
-    simData = new TXPlaneData(betaFlightNet, setupData);
+    betaFlightLink = new CBetaflightLink(setupData);
+    xplaneAdapter = new CXPlaneAdapter(betaFlightLink, setupData);
 
-    betaFlightNet->Initialize();
-    simData->Initialize();
+    betaFlightLink->Initialize();
+    xplaneAdapter->Initialize();
 
     InitFlightLoop();
     CreateBetaflightMenu();

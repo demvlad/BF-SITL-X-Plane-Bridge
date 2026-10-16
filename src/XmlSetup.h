@@ -3,8 +3,7 @@
 #include <vector>
 #include "pugiconfig.hpp"
 #include "pugixml.hpp"
-struct TModeRC
-{
+struct TModeRC {
     std::string name;
     unsigned short aux;
     unsigned short value;
@@ -35,8 +34,7 @@ struct TModeRC
     }
 };
 
-struct TControlRC
-{
+struct TControlRC {
     std::string name;
     unsigned short aux;
 
@@ -64,8 +62,7 @@ struct TControlRC
     }
 };
 
-struct TServoControl
-{
+struct TServoControl {
     std::string name;
     unsigned short servo;
     bool reverse;
@@ -97,8 +94,7 @@ struct TServoControl
     }
 };
 
-struct TPlaneControl
-{
+struct TPlaneControl {
     struct
     {
         float Up, Down;
@@ -106,23 +102,20 @@ struct TPlaneControl
     float RudderLimit, AileronFromPitch;
 };
 
-struct TSetupRC
-{
+struct TSetupRC {
     std::vector <std::string> ModeNames;
     std::map <std::string, TModeRC> Modes;
     std::map <std::string, TControlRC> Controls;
 };
 
-struct TLaunchParams
-{
+struct TLaunchParams {
     float pitch_deg;
     float throwAccelX;
     float throwTime;
 };
 
 typedef std::map <std::string, TServoControl> TServoControls;
-class CXmlSetup
-{
+class CXmlSetup {
 public:
     CXmlSetup(void);
     ~CXmlSetup(void);

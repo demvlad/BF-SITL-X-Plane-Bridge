@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "XPLMDataAccess.h"
 #include "betaflight.h"
-#include "BetaflightData.h"
+#include "BetaflightLink.h"
 #include "XmlSetup.h"
 
 struct TXPlaneDataRefs
@@ -95,9 +95,9 @@ struct TEnabledPlaneControl {
     bool Rudder;
 };
 
-class TXPlaneData {
+class CXPlaneAdapter {
     TXPlaneDataRefs XPlaneDataRefs;
-    CBetaflightData* const m_pBetaflight;
+    CBetaflightLink* const m_pBetaflight;
     TServoControls* const m_pServoControls;
     TLaunchParams * const m_pLaunchParams;
     TEnabledPlaneControl EnabledPlaneControl;
@@ -112,7 +112,7 @@ class TXPlaneData {
     void planeThrowUpdate(float step);
     void setThrowPitch();
 public:
-    TXPlaneData(CBetaflightData *pBetaflight, const CXmlSetup *pXplSetup) : m_pBetaflight(pBetaflight),
+    CXPlaneAdapter(CBetaflightLink *pBetaflight, const CXmlSetup *pXplSetup) : m_pBetaflight(pBetaflight),
                                                                             m_pServoControls((TServoControls* const)&pXplSetup->ServoControls),
                                                                             m_pLaunchParams((TLaunchParams* const )&pXplSetup->LaunchParams),
                                                                             m_throwTimer(-100.0f), m_throwForce(0.0f)

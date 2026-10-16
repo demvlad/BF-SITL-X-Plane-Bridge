@@ -1,4 +1,4 @@
-#include "XPlaneData.h"
+#include "XPlaneAdapter.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stddef.h>
@@ -6,7 +6,7 @@
 #define DEG2RAD         (M_PI / 180.0)
 #define InHg2Pa            3386.39
 
-void TXPlaneData::Initialize()
+void CXPlaneAdapter::Initialize()
 {
     XPlaneDataRefs.PlaneState.CoordsGPS.Latitude = XPLMFindDataRef("sim/flightmodel/position/latitude");
     XPlaneDataRefs.PlaneState.CoordsGPS.Longitude = XPLMFindDataRef("sim/flightmodel/position/longitude");
@@ -69,7 +69,7 @@ void TXPlaneData::Initialize()
     XPlaneDataRefs.Simulation.RunningTime = XPLMFindDataRef("sim/time/total_running_time_sec");
 }
 
-void TXPlaneData::updateBetaflightStateFromXPlane()
+void CXPlaneAdapter::updateBetaflightStateFromXPlane()
 {
     double t = XPLMGetDataf(XPlaneDataRefs.Simulation.RunningTime);
     m_pBetaflight->bfOutFlightState.timestamp = t;
@@ -99,7 +99,7 @@ void TXPlaneData::updateBetaflightStateFromXPlane()
     m_pBetaflight->bfOutFlightState.pressure = XPLMGetDataf(XPlaneDataRefs.PlaneState.Baro.pressure) * InHg2Pa;
 }
 
-void TXPlaneData::updateBetaflightControlFromXPlane()
+void CXPlaneAdapter::updateBetaflightControlFromXPlane()
 {
     float stickRoll = XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.roll);
     float stickPitch = -XPLMGetDataf(XPlaneDataRefs.PlaneControl.Stick.pitch);
@@ -114,7 +114,7 @@ void TXPlaneData::updateBetaflightControlFromXPlane()
     m_pBetaflight->setThrottle(throttle);
 }
 
-float TXPlaneData::getOutput(const TServoControl& ctrl)
+float CXPlaneAdapter::getOutput(const TServoControl& ctrl)
 {
     if (!ctrl.isEnabled()) {
         return 0.0f;
@@ -136,7 +136,7 @@ float TXPlaneData::getOutput(const TServoControl& ctrl)
     return output;
 }
 
-void TXPlaneData::sendServoControlToXPlane()
+void CXPlaneAdapter::sendServoControlToXPlane()
 {
     float rollControl = 0.0f,
           pitchControl = 0.0f,
@@ -173,7 +173,7 @@ void TXPlaneData::sendServoControlToXPlane()
     XPLMSetDatavf(XPlaneDataRefs.PlaneControl.Throttle.output_throttle, throttle, 0, 2);
 }
 
-void TXPlaneData::computeQuaternionFromRPY( double* quat, double roll, double pitch, double yaw)
+void CXPlaneAdapter::computeQuaternionFromRPY( double* quat, double roll, double pitch, double yaw)
 {
   const double cosRoll = cos(DEG2RAD * roll * 0.5);
   const double sinRoll = sin(DEG2RAD * roll * 0.5);
@@ -190,7 +190,7 @@ void TXPlaneData::computeQuaternionFromRPY( double* quat, double roll, double pi
   quat[3] = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
 }
 
-void TXPlaneData::Update(float step)
+void CXPlaneAdapter::Update(float step)
 {
     sendServoControlToXPlane();
     updateBetaflightControlFromXPlane();
@@ -198,7 +198,7 @@ void TXPlaneData::Update(float step)
     planeThrowUpdate(step);
 }
 
-void TXPlaneData::planeThrowUpdate(float step)
+void CXPlaneAdapter::planeThrowUpdate(float step)
 {
     if (m_throwTimer > 0.0f) {
         XPLMSetDataf(XPlaneDataRefs.PlaneControl.force_x, m_throwForce);
@@ -210,7 +210,7 @@ void TXPlaneData::planeThrowUpdate(float step)
     }
 }
 
-void TXPlaneData::setThrowPitch()
+void CXPlaneAdapter::setThrowPitch()
 {
     XPLMDataRef qRef = XPLMFindDataRef("sim/flightmodel/position/q");
 
@@ -245,7 +245,7 @@ void TXPlaneData::setThrowPitch()
     XPLMSetDatavf(qRef, q, 0, 4);
 }
 
-void TXPlaneData::planeLaunch()
+void CXPlaneAdapter::planeLaunch()
 {
     m_throwTimer = m_pLaunchParams->throwTime;
     const XPLMDataRef massaRef = XPLMFindDataRef("sim/flightmodel/weight/m_total");

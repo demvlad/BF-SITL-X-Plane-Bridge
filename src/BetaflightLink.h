@@ -6,8 +6,7 @@
 #include "XmlSetup.h"
 #define UNDEFINED_PWM_PULSE    900
 
-class CBetaflightData
-{
+class CBetaflightLink {
     SOCKET recv_fc_motor_output_sock, recv_fc_pwm_output_sock,
            sendto_fc_state_sock, sendto_fc_rc_sock;
     struct sockaddr_in dest;
@@ -21,17 +20,17 @@ public:
     servo_packet bfInMotors;
     servo_packet_raw bfInServos;
 
-    CBetaflightData(const CXmlSetup *pXmlSetup);
+    CBetaflightLink(const CXmlSetup *pXmlSetup);
     bool Initialize();
     void Terminate();
     void Restart();
-    bool SendData();
-    bool RecvData();
+    bool sendFlightState();
+    bool receiveMotorCommands();
 
     void setMode(std::string modeName);
     void setThrottle(double throttle);
     void setStickPitch(double stickPitch);
     void setStickRoll(double stickRoll);
     void setStickYaw(double stickYaw);
-    ~CBetaflightData(void);
+    ~CBetaflightLink(void);
 };
